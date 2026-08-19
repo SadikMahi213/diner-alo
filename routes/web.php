@@ -1,7 +1,121 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Front\LandingController;
+use App\Http\Controllers\Front\AboutController;
+use App\Http\Controllers\Front\BlogController;
+use App\Http\Controllers\Front\GalleryController;
+use App\Http\Controllers\Front\DonationController;
+use App\Http\Controllers\Front\VolunteerController;
+use App\Http\Controllers\Front\MembershipController;
+use App\Http\Controllers\Front\ContactController;
+use App\Http\Controllers\User\PaymentController as UserPaymentController;
+use App\Http\Controllers\Admin\DinersAloDashboardController;
+use App\Http\Controllers\SslCommerzPaymentController;
 
-Route::get('/', function () {
-    return view('welcome');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+// Authentication routes (using laravel/ui)
+Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post');
+Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+// Frontend routes (public, no auth required)
+Route::middleware(['web'])->group(function () {
+    // Homepage
+    Route::get('/', [LandingController::class, 'index'])->name('home');
+
+    // About
+    Route::get('/about', [AboutController::class, 'index'])->name('about');
+
+    // Contact
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+    // Blog
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+    Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+
+    // Gallery
+    Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
+    Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
+
+    // Donation
+    Route::get('/donation', [DonationController::class, 'create'])->name('donation.create');
+    Route::post('/donation/sslcommerz/initiate', [DonationController::class, 'initiateSslCommerz'])->name('donation.sslcommerz.initiate');
+    Route::post('/donation', [DonationController::class, 'store'])->name('donation.store');
+    Route::get('/donation/success/{id}', [DonationController::class, 'showSuccess'])->name('donation.success');
+    Route::get('/donation/receipt/{id}', [DonationController::class, 'receipt'])->name('donation.receipt');
+    Route::get('/donation/download-receipt/{id}', [DonationController::class, 'downloadReceipt'])->name('donation.download-receipt');
+
+    // Volunteer
+    Route::get('/volunteer', [VolunteerController::class, 'create'])->name('volunteer.create');
+    Route::post('/volunteer', [VolunteerController::class, 'store'])->name('volunteer.store');
+    Route::get('/volunteer/thankyou', [VolunteerController::class, 'thankyou'])->name('volunteer.thankyou');
+
+    // Membership
+    Route::get('/membership', [MembershipController::class, 'create'])->name('membership.create');
+    Route::post('/membership', [MembershipController::class, 'store'])->name('membership.store');
+    Route::get('/membership/thankyou/{id}', [MembershipController::class, 'thankyou'])->name('membership.thankyou');
+
+    // Zakat
+    Route::get('/zakat', function () {
+        return view('front.zakat.index');
+    })->name('zakat');
+
+    // SSLCommerz Callback URLs (success/fail/cancel are GET browser redirects; IPN is POST server-to-server)
+    Route::match(['get', 'post'], '/sslcommerz/success', [SslCommerzPaymentController::class, 'success'])->name('sslcommerz.success');
+    Route::match(['get', 'post'], '/sslcommerz/fail', [SslCommerzPaymentController::class, 'fail'])->name('sslcommerz.fail');
+    Route::match(['get', 'post'], '/sslcommerz/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('sslcommerz.cancel');
+    Route::post('/sslcommerz/ipn', [SslCommerzPaymentController::class, 'ipn'])->name('sslcommerz.ipn');
+});
+
+// Home route redirect
+Route::get('/home', function () {
+    return redirect()->route('home');
+})->name('home.redirect');
+
+// User Dashboard Routes (requires auth)
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\User\DashboardController::class, 'index'])->name('user.dashboard');
+    Route::get('/packages', [\App\Http\Controllers\User\DashboardController::class, 'packages'])->name('user.packages');
+    Route::get('/orders', [\App\Http\Controllers\User\DashboardController::class, 'orders'])->name('user.orders');
+    Route::get('/transactions', [\App\Http\Controllers\User\DashboardController::class, 'transactions'])->name('user.transactions');
+    Route::get('/wallet', [\App\Http\Controllers\User\DashboardController::class, 'wallet'])->name('user.wallet');
+
+    // Package Checkout
+    Route::get('/packages/checkout/{package}', [UserPaymentController::class, 'checkout'])->name('user.checkout');
+    Route::post('/packages/{package}/pay', [UserPaymentController::class, 'pay'])->name('user.pay');
+});
+
+// Admin Routes (requires auth + admin middleware)
+Route::middleware(['web', 'auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [DinersAloDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/donations', [DinersAloDashboardController::class, 'donationsDatatable'])->name('admin.donations');
+    Route::get('/admin/projects', [DinersAloDashboardController::class, 'projectsDatatable'])->name('admin.projects');
+    Route::get('/admin/donors', [DinersAloDashboardController::class, 'donorsDatatable'])->name('admin.donors');
+    Route::get('/admin/volunteers', [DinersAloDashboardController::class, 'volunteersDatatable'])->name('admin.volunteers');
+    Route::get('/admin/members', [DinersAloDashboardController::class, 'membersDatatable'])->name('admin.members');
+    Route::get('/admin/contacts', [DinersAloDashboardController::class, 'contactMessagesDatatable'])->name('admin.contacts');
+    Route::get('/admin/statistics', [DinersAloDashboardController::class, 'statisticsData'])->name('admin.statistics');
+    Route::get('/admin/export/donations', [DinersAloDashboardController::class, 'exportDonations'])->name('admin.export.donations');
+    Route::get('/admin/export/members', [DinersAloDashboardController::class, 'exportMembers'])->name('admin.export.members');
+
+    // Packages
+    Route::get('/admin/packages', [\App\Http\Controllers\Admin\PackageController::class, 'index'])->name('admin.packages');
+    Route::get('/admin/packages/create', [\App\Http\Controllers\Admin\PackageController::class, 'create'])->name('admin.packages.create');
+    Route::post('/admin/packages', [\App\Http\Controllers\Admin\PackageController::class, 'store'])->name('admin.packages.store');
+    Route::get('/admin/packages/{package}/edit', [\App\Http\Controllers\Admin\PackageController::class, 'edit'])->name('admin.packages.edit');
+    Route::put('/admin/packages/{package}', [\App\Http\Controllers\Admin\PackageController::class, 'update'])->name('admin.packages.update');
+    Route::delete('/admin/packages/{package}', [\App\Http\Controllers\Admin\PackageController::class, 'destroy'])->name('admin.packages.destroy');
 });
