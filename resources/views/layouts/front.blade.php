@@ -61,6 +61,8 @@
             <nav class="hidden md:block">
                 <ul class="flex space-x-8">
                     <li><a href="{{ route('home') }}" class="text-gray-300 hover:text-emerald-400 font-bangla">হোম</a></li>
+                    <li><a href="{{ route('activities') }}" class="text-gray-300 hover:text-emerald-400 font-bangla">কার্যক্রমসমূহ</a></li>
+                    <li><a href="{{ route('programs') }}" class="text-gray-300 hover:text-emerald-400 font-bangla">প্রোগাম</a></li>
                     <li><a href="{{ route('about') }}" class="text-gray-300 hover:text-emerald-400 font-bangla">সম্পর্কে</a></li>
                     <li><a href="{{ route('blog.index') }}" class="text-gray-300 hover:text-emerald-400 font-bangla">ব্লগ</a></li>
                     <li><a href="{{ route('gallery.index') }}" class="text-gray-300 hover:text-emerald-400 font-bangla">গ্যালারি</a></li>
@@ -81,6 +83,8 @@
         <div id="mobileMenu" class="hidden md:hidden absolute top-full left-0 right-0 bg-gray-900 border-t border-white/10">
             <ul class="flex flex-col space-y-4 px-8 py-4">
                 <li><a href="{{ route('home') }}" class="text-white hover:text-emerald-400 font-bangla">হোম</a></li>
+                <li><a href="{{ route('activities') }}" class="text-white hover:text-emerald-400 font-bangla">কার্যক্রমসমূহ</a></li>
+                <li><a href="{{ route('programs') }}" class="text-white hover:text-emerald-400 font-bangla">প্রোগাম</a></li>
                 <li><a href="{{ route('about') }}" class="text-white hover:text-emerald-400 font-bangla">সম্পর্কে</a></li>
                 <li><a href="{{ route('blog.index') }}" class="text-white hover:text-emerald-400 font-bangla">ব্লগ</a></li>
                 <li><a href="{{ route('gallery.index') }}" class="text-white hover:text-emerald-400 font-bangla">গ্যালারি</a></li>
@@ -110,6 +114,8 @@
                 <div>
                     <h3 class="text-xl font-medium mb-6 font-bangla">দ্রুত লিংক</h3>
                     <ul class="space-y-3 text-gray-400 text-sm font-bangla">
+                        <li><a href="{{ route('activities') }}" class="hover:text-emerald-400">কার্যক্রমসমূহ</a></li>
+                        <li><a href="{{ route('programs') }}" class="hover:text-emerald-400">প্রোগাম</a></li>
                         <li><a href="{{ route('about') }}" class="hover:text-emerald-400">সম্পর্কে</a></li>
                         <li><a href="{{ route('blog.index') }}" class="hover:text-emerald-400">ব্লগ</a></li>
                         <li><a href="{{ route('gallery.index') }}" class="hover:text-emerald-400">গ্যালারি</a></li>

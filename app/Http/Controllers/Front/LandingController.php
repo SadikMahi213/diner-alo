@@ -24,7 +24,7 @@ class LandingController extends Controller
         $totalBeneficiaries = Project::where('status', 'completed')->sum('beneficiary_count');
 
         // Get active donation funds (monthly plans)
-        $donationFunds = DonationFund::where('is_active', true)->take(4)->get();
+        $donationFunds = DonationFund::orderBy('id')->take(6)->get();
 
         // Get featured projects
         $featuredProjects = Project::where('status', 'running')

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\LandingController;
+use App\Http\Controllers\Front\ActivitiesController;
+use App\Http\Controllers\Front\ProgramsController;
 use App\Http\Controllers\Front\AboutController;
 use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\GalleryController;
@@ -36,6 +38,10 @@ Route::middleware(['web'])->group(function () {
 
     // About
     Route::get('/about', [AboutController::class, 'index'])->name('about');
+
+    // Activities & Programs
+    Route::get('/activities', [ActivitiesController::class, 'index'])->name('activities');
+    Route::get('/programs', [ProgramsController::class, 'index'])->name('programs');
 
     // Contact
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
