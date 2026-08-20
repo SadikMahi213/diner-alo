@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সম্পর্কে - দিনের আলো</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif !important; }
-    </style>
-</head>
-<body class="bg-bg font-bg">
+@extends('layouts.front')
+@section('title', 'সম্পর্কে')
+@section('content')
 
     <!-- About Header -->
     <section class="py-16 bg-gray-900">
@@ -48,7 +36,7 @@
                 <div>
                     <h3 class="text-2xl font-bold text-gold-600 mb-6 bengali">Our Vision</h3>
                     <p class="text-gray-600 text-lg mb-4 bengali">
-                        একটি বিশ্ব যেখানে প্রতিটি মানুষ আত্মনির্ভরত এবং সম್ಮানের সাথে জ Boundaries ন 자유享用। Where every person lives with dignity and freedom beyond boundaries.
+                        একটি বিশ্ব যেখানে প্রতিটি মানুষ আত্মনির্ভরত এবং সম್মানের সাথে জ Boundaries ন 자유享用। Where every person lives with dignity and freedom beyond boundaries.
                     </p>
                     <p class="text-gray-600 text-lg mb-6 bengali">
                         bangladeshে রংক্ষয়মুক্ত ও সম affluent society rêve।
@@ -63,7 +51,7 @@
     <section class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
             <div class="max-w-3xl mx-auto">
-                <h3 class="text-2xl font-bold text-emerald-600 mb-6 bengoli>Our History</h3>
+                <h3 class="text-2xl font-bold text-emerald-600 mb-6 bengali>Our History</h3>
                 <div class="space-y-4">
                     <div class="p-4 bg-white rounded-xl border-l-4 border-emerald-500 hover-transition">
                         <h4 class="font-bold text-emerald-600 mb-2">2024 - Foundation</h4>
@@ -86,8 +74,8 @@
     <section class="py-12 bg-white">
         <div class="container mx-auto px-4">
             <div class="max-w-3xl mx-auto">
-                <h3 class="text-2xl font-bold text-emerald-600 mb-6 bengoli>Our Team</h3>
-                <div="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <h3 class="text-2xl font-bold text-emerald-600 mb-6 bengali>Our Team</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Team Member 1 -->
                     <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover-transition">
                         <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
@@ -119,63 +107,4 @@
         </div>
     </section>
 
-    <!-- Contact Info -->
-    <section class="py-12 bg-gray-900">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h4 class="text-emerald-400 font-medium mb-4 bengoli>Contact Information</h4>
-                    <address class="text-gray-400 text-sm bengali">
-                        <p>📍 Dhaka, Bangladesh</p>
-                        <p>📞 +880 1712345678</p>
-                        <p>📧 info@dineralo.org</p>
-                    </address>
-                </div>
-                <div>
-                    <h4 class="text-gold-400 font-medium mb-4 bengoli>Follow Us</h4>
-                    <div class="flex space-x-3">
-                        <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h1v4h-1m0 0h1m-1-4h1v4h-1m1 8V7a1 1 0 00-1-1h-4a1 1 0 00-1 1v4m0 0h1m-1 0l-3 3m-3-3l3 3m0 0l3-3m-3 3l3-3"/></svg>
-                            Facebook
-                        </a>
-                        <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7zM12 20a8 8 0 00-8 8h16a8 8 0 00-8-8z"></path></svg>
-                            Twitter
-                        </a>
-                        <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors">
-                            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.261 2.261a5.992 5.992 0 018.482 0M15.547 15.547l6.057 6.057m0-1.321l-6.057-6.057m6.057 6.057-3.028-3.028m3.394-3.394L15.547 15.547"/></svg>
-                            Instagram
-                        </a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-emerald-400 font-medium mb-4 bengoli>Quick Links</h4>
-                    <ul class="space-y-2 text-gray-400 text-sm bengali">
-                        <li><a href="#!" hover:text-emerald-400 transition-colors">Home</a></li>
-                        <li><a href="#!" hover:text-emerald-400 transition-colors">Our Activities</a></li>
-                        <li><a href="#!" hover:text-emerald-400 transition-colors">Programs</a></li>
-                        <li><a href="#!" hover:text-emerald-400 transition-colors">Donate</a></li>
-                        <li><a href="#!" hover:text-emerald-400 transition-colors">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-16">
-        <div class="container mx-auto px-4">
-            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm bengali">&copy; 2026 দিনের আলো। সমস্ত অধিকার সংরক্ষিত。</p>
-                <div class="flex space-x-6 md:space-x-8">
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Privacy Policy</a>
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Terms & Conditions</a>
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Refund Policy</a>
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Donation Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-</body>
-</html>
+@endsection

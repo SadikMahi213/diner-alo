@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>যোগাযোগ - দিনের আলো</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif !important; }
-    </style>
-</head>
-<body class="bg-bg font-bg">
+@extends('layouts.front')
+@section('title', 'যোগাযোগ')
+
+@section('content')
 
     <!-- Contact Header -->
     <section class="py-16 bg-gray-900">
@@ -76,33 +65,33 @@
     <section class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                
+
                 <div>
-                    <h4 class="text-emerald-400 font-medium mb-4 bengoli>Office Address</h4>
+                    <h4 class="text-emerald-400 font-medium mb-4 bengali">Office Address</h4>
                     <address class="text-gray-600 text-sm bengali">
                         <p>📍 House # 123, Road # 5, Mohammadpur, Dhaka-1207, Bangladesh</p>
                         <p>🕐 Office Hours: 9:00 AM - 5:00 PM (Saturday to Thursday)</p>
                     </address>
                 </div>
-                
+
                 <div>
-                    <h4 class="text-gold-400 font-medium mb-4 bengoli>Phone</h4>
+                    <h4 class="text-gold-400 font-medium mb-4 bengali">Phone</h4>
                     <div class="space-y-2 text-gray-600 text-sm bengali">
                         <p>📞 +880 1712345678 (Main Office)</p>
                         <p>📞 +880 1787654321 (Emergency)</p>
                     </div>
                 </div>
-                
+
                 <div>
-                    <h4 class="text-emerald-400 font-medium mb-4 bengoli>Email</h4>
+                    <h4 class="text-emerald-400 font-medium mb-4 bengali">Email</h4>
                     <div class="space-y-2 text-gray-600 text-sm bengali">
                         <p>📧 info@dineralo.org</p>
                         <p>📧 admin@dineralo.org</p>
                     </div>
                 </div>
-                
+
                 <div>
-                    <h4 class="text-gold-400 font-medium mb-4 bengoli>Social Media</h4>
+                    <h4 class="text-gold-400 font-medium mb-4 bengali">Social Media</h4>
                     <div class="flex space-x-3">
                         <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors">
                             <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h1v4h-1m0 0h1m-1-4h1v4h-1m1 8V7a1 1 0 00-1-1h-4a1 1 0 00-1 1v4m0 0h1m-1 0l-3 3m-3-3l3 3m0 0l3-3m-3 3l3-3"/></svg>
@@ -134,20 +123,4 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-16">
-        <div class="container mx-auto px-4">
-            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm bengali">&copy; 2026 দিনের আলো। সমস্ত অধিকার সংরক্ষিত。</p>
-                <div class="flex space-x-6 md:space-x-8">
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Privacy Policy</a>
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Terms & Conditions</a>
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Refund Policy</a>
-                    <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Donation Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-</body>
-</html>
+@endsection

@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $post->title }} - দিনের আলো</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif !important; }
+@extends('layouts.front')
+@section('title', '{{ $post->title }}')
+@section('styles')
         .prose bengali { font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif; }
-    </style>
-</head>
-<body class="bg-bg font-bg">
+@endsection
+@section('content')
 
     <!-- Blog Header -->
     <section class="py-16 bg-gray-900">
@@ -42,7 +32,7 @@
     <section class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
             <div class="max-w-2xl mx-auto">
-                <h2 class="text-2xl font-bold text-emerald-600 mb-6 bengoli>Related Posts</h2>
+                <h2 class="text-2xl font-bold text-emerald-600 mb-6 bengali>Related Posts</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($relatedPosts as $related)
                     <article class="bg-white rounded-xl p-5 border border-gray-100 hover-transition">
@@ -87,5 +77,4 @@
         </div>
     </section>
 
-</body>
-</html>
+@endsection

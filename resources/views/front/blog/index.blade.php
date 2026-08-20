@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ব্লগ - দিনের আলো</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif !important; }
-    </style>
-</head>
-<body class="bg-bg font-bg">
+@extends('layouts.front')
+@section('title', 'ব্লগ')
+@section('content')
 
     <!-- Blog Header -->
     <section class="py-16 bg-gray-900">
@@ -185,5 +173,4 @@
         </div>
     </section>
 
-</body>
-</html>
+@endsection

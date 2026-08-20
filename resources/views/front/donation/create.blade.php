@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>দান করুন - দিনের আলো</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif !important; }
-    </style>
-</head>
-<body class="bg-bg font-bg">
-    
+@extends('layouts.front')
+@section('title', 'দান করুন')
+
+@section('content')
+
     <!-- Donation Form Header -->
     <section class="py-16 bg-gray-900">
         <div class="container mx-auto px-4">
@@ -22,7 +11,7 @@
                     দান করুন
                 </h2>
                 <p class="text-gray-400 text-lg mb-8 max-w-2xl mx-auto bengali">
-                    আপনার értékপূর্ণ অনুদানের মাধ্যমে হস্তঅভಿವাদীদের জীবন পরিবর্তন করুন।
+                    আপনার értékপূর্ণ অনুদানের মাধ্যমে হস্তঅভি[\u200c]বাদীদের জীবন পরিবর্তন করুন।
                 </p>
             </div>
         </div>
@@ -34,11 +23,11 @@
             <div class="max-w-2xl mx-auto">
                 <form action="{{ route('donation.store') }}" method="POST" class="space-y-6">
                     @csrf
-                    
+
                     <!-- Donor Information -->
                     <div>
-                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengoli>দনকারী তথ্য</h3>
-                        
+                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengali">দনকারী তথ্য</h3>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Full Name</label>
@@ -53,14 +42,14 @@
                                     placeholder="+৮৮০ ১৭১২৩৪৫৬৭৮">
                             </div>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Email Address</label>
                             <input type="email" name="email" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                                 placeholder="আইমেইল@এড্রেস.কম">
                         </div>
-                        
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Anonymous Donation</label>
@@ -79,14 +68,14 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Donation Details -->
                     <div>
-                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengoli>দানের বিবরণ</h3>
-                        
+                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengali">দানের বিবরণ</h3>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali>Donation Amount</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Donation Amount</label>
                                 <div class="space-y-2">
                                     <button type="button" class="w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
                                         ৳500
@@ -108,9 +97,9 @@
                                         placeholder="Custom amount (৳)">
                                 </div>
                             </div>
-                            
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali>Donation Category</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Donation Category</label>
                                 <select name="donation_fund_id"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors appearance-none">
                                     <option value="">Category selection...</option>
@@ -126,7 +115,7 @@
                                         ['id' => null, 'name_bn' => 'প্রজেক্ট-ভিত্তিক দান', 'name_en' => 'Project-based Donation'],
                                     ];
                                     foreach ($funds as $fund): ?>
-                                        <option value="<?= $fund['id'] ?>" 
+                                        <option value="<?= $fund['id'] ?>"
                                             <?= ($donation && $donation->donation_fund_id == $fund['id']) ? 'selected' : '' ?>>
                                             <?= $fund['name_bn'] ?> / <?= $fund['name_en'] ?>
                                         </option>
@@ -134,10 +123,10 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <!-- Project Selection -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 bengali>Select Project (Optional)</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Select Project (Optional)</label>
                             <select name="project_id"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors appearance-none">
                                 <option value="">Select a project...</option>
@@ -148,7 +137,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        
+
                         <!-- Donor Message -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Message (Optional)</label>
@@ -157,11 +146,11 @@
                                 placeholder="আপনার বার্তা বা dedicó here"></textarea>
                         </div>
                     </div>
-                    
+
                     <!-- Payment Method -->
                     <div>
-                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengoli>পেমেন্ট মেথড</h3>
-                        
+                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengali">পেমেন্ট মেথড</h3>
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2 bengali">bKash</label>
@@ -170,7 +159,7 @@
                                     <p class="text-gray-500 text-sm">Scan or send money to the number above</p>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Nagad</label>
                                 <div class="px-4 py-3 border border-gold-200 rounded-lg bg-gold-50">
@@ -179,7 +168,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="grid grid-cols-2 gap-4 mt-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Card</label>
@@ -197,7 +186,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Bank Transfer</label>
                                 <div class="px-4 py-3 border rounded-lg bg-white shadow-sm">
@@ -207,11 +196,11 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="mt-6">
                             <button type="submit"
                                 class="w-full py-4 px-8 bg-emerald text-white font-medium rounded-full hover:bg-emerald-dark transition-colors text-lg">
-                                পেমেন্ট পোর্টালে যাওয়
+                                পেমেন্ট পোর্টালে যাওয়
                             </button>
                         </div>
                     </div>
@@ -243,5 +232,4 @@
             </div>
         </div>
     </section>
-</body>
-</html>
+@endsection
