@@ -16,13 +16,12 @@
             <nav class="hidden md:block">
                 <ul class="flex space-x-4 text-sm">
                     <li><a href="{{ route('admin.dashboard') }}" class="hover:text-emerald-300">ড্যাশবোর্ড</a></li>
-                    <li><a href="{{ route('admin.users.index') }}" class="hover:text-emerald-300">ইউজার</a></li>
-                    <li><a href="{{ route('admin.courses.index') }}" class="hover:text-emerald-300">কোর্স</a></li>
-                    <li><a href="{{ route('admin.packages') }}" class="hover:text-emerald-300">প্যাকেজ</a></li>
-                    <li><a href="{{ route('admin.orders.index') }}" class="hover:text-emerald-300">অর্ডার</a></li>
                     <li><a href="{{ route('admin.donation-funds.index') }}" class="hover:text-emerald-300">ফান্ড</a></li>
                     <li><a href="{{ route('admin.donations') }}" class="hover:text-emerald-300">দান</a></li>
                     <li><a href="{{ route('admin.transactions.index') }}" class="hover:text-emerald-300">লেনদেন</a></li>
+                    <li><a href="{{ route('admin.donors') }}" class="hover:text-emerald-300">দাতা</a></li>
+                    <li><a href="{{ route('admin.volunteers') }}" class="hover:text-emerald-300">স্বেচ্ছাসেবক</a></li>
+                    <li><a href="{{ route('admin.members') }}" class="hover:text-emerald-300">সদস্য</a></li>
                     <li><a href="{{ route('home') }}" class="hover:text-emerald-300">ফ্রন্ট</a></li>
                 </ul>
             </nav>
