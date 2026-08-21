@@ -3,7 +3,7 @@
 @section('title', 'Donation Details')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 text-gray-900">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Donation {{ $donation->transaction_id }}</h1>
         <a href="{{ route('admin.donations') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm">Back to Donations</a>

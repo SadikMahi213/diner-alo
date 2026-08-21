@@ -3,32 +3,32 @@
 @section('title', 'Volunteers')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Volunteers</h1>
-    <p class="text-sm text-gray-500 mb-6">All volunteer applications and assignments</p>
+<div class="container mx-auto px-4 py-8 text-gray-900">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Volunteers</h1>
+    <p class="text-sm text-gray-600 mb-6">All volunteer applications and assignments</p>
 
-    <form method="GET" class="bg-white rounded-xl p-4 border shadow-sm mb-6">
+    <form method="GET" class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm mb-6">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Name / phone / email / district" class="border rounded-lg px-3 py-2 text-sm">
-            <select name="status" class="border rounded-lg px-3 py-2 text-sm">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Name / phone / email / district" class="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <select name="status" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Status</option>
                 @foreach(['pending','approved','rejected','inactive'] as $s)
                     <option value="{{ $s }}" {{ request('status')==$s ? 'selected' : '' }}>{{ strtoupper($s) }}</option>
                 @endforeach
             </select>
-            <select name="preferred_activity" class="border rounded-lg px-3 py-2 text-sm">
+            <select name="preferred_activity" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Activities</option>
                 @foreach(['education','medical','food','relief','events','administrative','other'] as $a)
                     <option value="{{ $a }}" {{ request('preferred_activity')==$a ? 'selected' : '' }}>{{ ucfirst($a) }}</option>
                 @endforeach
             </select>
-            <select name="availability" class="border rounded-lg px-3 py-2 text-sm">
+            <select name="availability" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">Any Availability</option>
                 @foreach(['weekends','weekdays','flexible','full_time'] as $av)
                     <option value="{{ $av }}" {{ request('availability')==$av ? 'selected' : '' }}>{{ ucfirst($av) }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm">Search</button>
+            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm font-medium">Search</button>
         </div>
         <div class="mt-3">
             <a href="{{ route('admin.volunteers') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm">Reset</a>

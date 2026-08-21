@@ -3,32 +3,32 @@
 @section('title', 'Members')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 text-gray-900">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Members</h1>
-        <a href="{{ route('admin.export.members') }}?{{ http_build_query(request()->query()) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded text-sm">Export CSV</a>
+        <h1 class="text-3xl font-bold text-gray-900">Members</h1>
+        <a href="{{ route('admin.export.members') }}?{{ http_build_query(request()->query()) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Export CSV</a>
     </div>
 
-    <form method="GET" class="bg-white rounded-xl p-4 border shadow-sm mb-6">
+    <form method="GET" class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Name / member ID / email" class="border rounded-lg px-3 py-2 text-sm">
-            <select name="membership_type" class="border rounded-lg px-3 py-2 text-sm">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Name / member ID / email" class="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <select name="membership_type" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Types</option>
                 @foreach(['general','lifetime','contributor','volunteer'] as $t)
                     <option value="{{ $t }}" {{ request('membership_type')==$t ? 'selected' : '' }}>{{ ucfirst($t) }}</option>
                 @endforeach
             </select>
-            <select name="status" class="border rounded-lg px-3 py-2 text-sm">
+            <select name="status" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Status</option>
                 @foreach(['pending','active','inactive','rejected','expired'] as $s)
                     <option value="{{ $s }}" {{ request('status')==$s ? 'selected' : '' }}>{{ strtoupper($s) }}</option>
                 @endforeach
             </select>
-            <input type="date" name="date_from" value="{{ request('date_from') }}" class="border rounded-lg px-3 py-2 text-sm">
+            <input type="date" name="date_from" value="{{ request('date_from') }}" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
         <div class="flex gap-2 mt-3">
-            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm">Search</button>
-            <a href="{{ route('admin.members') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm">Reset</a>
+            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm font-medium">Search</button>
+            <a href="{{ route('admin.members') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm font-medium">Reset</a>
         </div>
     </form>
 

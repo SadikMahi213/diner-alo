@@ -3,9 +3,9 @@
 @section('title', 'Donors')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Donors</h1>
-    <p class="text-sm text-gray-500 mb-6">All donors with aggregated donation statistics</p>
+<div class="container mx-auto px-4 py-8 text-gray-900">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Donors</h1>
+    <p class="text-sm text-gray-600 mb-6">All donors with aggregated donation statistics</p>
 
     @php
         $totalDonors = \App\Models\Donor::count();
@@ -26,10 +26,10 @@
         </div>
     </div>
 
-    <form method="GET" class="bg-white rounded-xl p-4 border shadow-sm mb-6 flex flex-wrap gap-3">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Name / email / mobile" class="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[220px]">
-        <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm">Search</button>
-        <a href="{{ route('admin.donors') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm">Reset</a>
+    <form method="GET" class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm mb-6 flex flex-wrap gap-3">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Name / email / mobile" class="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+        <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm font-medium">Search</button>
+        <a href="{{ route('admin.donors') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm font-medium">Reset</a>
     </form>
 
     <div class="bg-white rounded-xl shadow-sm border overflow-hidden">

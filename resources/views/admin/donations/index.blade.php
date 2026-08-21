@@ -3,10 +3,10 @@
 @section('title', 'Donations')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 text-gray-900">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Donations</h1>
-        <a href="{{ route('admin.export.donations') }}?{{ http_build_query(request()->query()) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded text-sm">Export CSV</a>
+        <h1 class="text-3xl font-bold text-gray-900">Donations</h1>
+        <a href="{{ route('admin.export.donations') }}?{{ http_build_query(request()->query()) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded text-sm font-medium">Export CSV</a>
     </div>
 
     <!-- Summary Cards -->
@@ -41,32 +41,32 @@
     </div>
 
     <!-- Filters -->
-    <form method="GET" class="bg-white rounded-xl p-4 border shadow-sm mb-6">
+    <form method="GET" class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="TX ID / donor / email / mobile" class="border rounded-lg px-3 py-2 text-sm">
-            <select name="status" class="border rounded-lg px-3 py-2 text-sm">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="TX ID / donor / email / mobile" class="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <select name="status" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Status</option>
                 @foreach(['pending','processing','successful','failed','cancelled','refunded'] as $s)
                     <option value="{{ $s }}" {{ request('status')==$s ? 'selected' : '' }}>{{ strtoupper($s) }}</option>
                 @endforeach
             </select>
-            <select name="fund" class="border rounded-lg px-3 py-2 text-sm">
+            <select name="fund" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Funds</option>
                 @foreach(\App\Models\DonationFund::orderBy('name_en')->get() as $f)
                     <option value="{{ $f->id }}" {{ request('fund')==$f->id ? 'selected' : '' }}>{{ $f->name_en }} / {{ $f->name_bn }}</option>
                 @endforeach
             </select>
-            <input type="date" name="date_from" value="{{ request('date_from') }}" class="border rounded-lg px-3 py-2 text-sm">
-            <input type="date" name="date_to" value="{{ request('date_to') }}" class="border rounded-lg px-3 py-2 text-sm">
-            <select name="gateway" class="border rounded-lg px-3 py-2 text-sm">
+            <input type="date" name="date_from" value="{{ request('date_from') }}" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <input type="date" name="date_to" value="{{ request('date_to') }}" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <select name="gateway" class="bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 <option value="">All Gateways</option>
                 <option value="sslcommerz" {{ request('gateway')=='sslcommerz' ? 'selected' : '' }}>SSLCommerz</option>
                 <option value="manual" {{ request('gateway')=='manual' ? 'selected' : '' }}>Manual</option>
             </select>
         </div>
         <div class="flex gap-2 mt-3">
-            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm">Search</button>
-            <a href="{{ route('admin.donations') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm">Reset</a>
+            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-lg text-sm font-medium">Search</button>
+            <a href="{{ route('admin.donations') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm font-medium">Reset</a>
         </div>
     </form>
 
