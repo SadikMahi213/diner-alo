@@ -26,13 +26,17 @@ class LandingController extends Controller
         // Get active donation funds (match reference: is_active true)
         $donationFunds = DonationFund::where('is_active', true)->orderBy('id')->take(6)->get();
 
-        // Get featured projects
-        $featuredProjects = Project::where('status', 'running')
+        // Get featured projects - prefer published, fallback to running for transition
+        $featuredProjects = Project::where('is_published', true)
+            ->where('status', 'running')
             ->orderByDesc('collected_amount')
             ->take(6)
             ->get();
+        if ($featuredProjects->isEmpty()) {
+            $featuredProjects = Project::where('status', 'running')->orderByDesc('collected_amount')->take(6)->get();
+        }
 
-        // Get latest blog posts (news)
+        // Get latest blog posts (news) - only published
         $latestNews = BlogPost::where('is_published', true)
             ->latest()
             ->take(3)

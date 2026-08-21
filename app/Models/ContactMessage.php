@@ -17,9 +17,18 @@ class ContactMessage extends Model
         'message',
         'is_read',
         'status',
+        'reply',
+        'replied_at',
+        'assigned_to',
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
+        'replied_at' => 'datetime',
     ];
+
+    public function assignedUser()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'assigned_to');
+    }
 }

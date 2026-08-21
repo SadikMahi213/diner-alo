@@ -11,15 +11,22 @@ class GalleryAlbum extends Model
 
     protected $fillable = [
         'title',
+        'title_bn',
+        'title_en',
         'slug',
         'description',
+        'description_bn',
+        'description_en',
         'category',
         'event_year',
         'is_published',
+        'is_featured',
+        'sort_order',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     public function items()

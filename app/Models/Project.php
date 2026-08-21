@@ -12,16 +12,27 @@ class Project extends Model
     protected $fillable = [
         'category_id',
         'title',
+        'title_bn',
+        'title_en',
+        'slug',
         'description',
+        'description_bn',
+        'description_en',
+        'short_description',
+        'short_description_bn',
+        'short_description_en',
         'cover_image',
         'gallery',
         'target_amount',
         'collected_amount',
         'beneficiary_count',
+        'location',
         'start_date',
         'end_date',
-        'location',
         'status',
+        'is_featured',
+        'is_published',
+        'is_program',
     ];
 
     protected $casts = [
@@ -30,7 +41,20 @@ class Project extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'gallery' => 'array',
+        'is_featured' => 'boolean',
+        'is_published' => 'boolean',
+        'is_program' => 'boolean',
     ];
+
+    public function getTitleBnAttribute($value)
+    {
+        return $value ?? $this->attributes['title'] ?? null;
+    }
+
+    public function getTitleEnAttribute($value)
+    {
+        return $value ?? $this->attributes['title'] ?? null;
+    }
 
     public function category()
     {

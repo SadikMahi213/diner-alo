@@ -12,19 +12,31 @@ class BlogPost extends Model
     protected $fillable = [
         'category_id',
         'title',
+        'title_bn',
+        'title_en',
         'slug',
         'excerpt',
+        'excerpt_bn',
+        'excerpt_en',
         'content',
+        'content_bn',
+        'content_en',
         'thumbnail',
         'author',
         'reading_time',
         'is_published',
+        'is_featured',
+        'published_at',
+        'seo_title',
+        'seo_description',
         'view_count',
     ];
 
     protected $casts = [
         'view_count' => 'integer',
         'is_published' => 'boolean',
+        'is_featured' => 'boolean',
+        'published_at' => 'datetime',
     ];
 
     public function category()

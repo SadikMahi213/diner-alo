@@ -15,11 +15,15 @@ class GalleryItem extends Model
         'thumbnail',
         'type',
         'caption',
+        'caption_bn',
+        'caption_en',
         'order',
+        'is_published',
     ];
 
     protected $casts = [
         'order' => 'integer',
+        'is_published' => 'boolean',
     ];
 
     public function album()
