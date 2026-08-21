@@ -20,10 +20,26 @@
         --gold: #f59e0b; /* Warm gold */
         --gold-hover: #d97706;
         --card: #ffffff;
+        --card-foreground: #1a1a2e;
         --border: #e5e7eb;
+        --input: #ffffff;
+        --input-foreground: #1a1a2e;
+        --muted-foreground: #6b7280;
+        --primary: #22c55e;
+        --primary-foreground: #ffffff;
+        --secondary: #f8f9fa;
+        --secondary-foreground: #1a1a2e;
+        --destructive: #ef4444;
+        --destructive-foreground: #ffffff;
         --success: #22c55e;
         --warning: #f59e0b;
         --error: #ef4444;
+    }
+
+    body {
+        background-color: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-sans);
     }
 
     .bengali-font {

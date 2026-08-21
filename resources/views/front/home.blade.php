@@ -3,9 +3,10 @@
 @section('content')
     
     <!-- Hero Section -->
-    <section id="hero" class="relative min-h-[600px] bg-[#f8f9fa] overflow-hidden">
+    <section id="hero" class="relative min-h-[600px] bg-gray-900 overflow-hidden">
         <div class="absolute inset-0">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#f8f9fa] to-gray-50"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/80 via-gray-900 to-gray-900"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
         </div>
         <div class="relative inset-0 flex items-center justify-center text-center px-4 py-14 sm:px-6 lg:px-8">
             <div class="max-w-3xl mx-auto mt-24 sm:mt-0">
