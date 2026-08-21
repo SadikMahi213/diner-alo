@@ -56,11 +56,14 @@ Route::middleware(['web'])->group(function () {
     Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
     Route::get('/gallery/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
 
-    // Donation
+    // Donation (reference workflow: fund → contact → amount → gateway portal → result → receipt)
     Route::get('/donation', [DonationController::class, 'create'])->name('donation.create');
     Route::post('/donation/sslcommerz/initiate', [DonationController::class, 'initiateSslCommerz'])->name('donation.sslcommerz.initiate');
     Route::post('/donation', [DonationController::class, 'store'])->name('donation.store');
+    Route::get('/donation/portal/{id}', [DonationController::class, 'portal'])->name('donation.portal');
     Route::get('/donation/success/{id}', [DonationController::class, 'showSuccess'])->name('donation.success');
+    Route::get('/donation/failed/{id}', [DonationController::class, 'showFailed'])->name('donation.failed');
+    Route::get('/donation/cancelled/{id}', [DonationController::class, 'showCancelled'])->name('donation.cancelled');
     Route::get('/donation/receipt/{id}', [DonationController::class, 'receipt'])->name('donation.receipt');
     Route::get('/donation/download-receipt/{id}', [DonationController::class, 'downloadReceipt'])->name('donation.download-receipt');
 

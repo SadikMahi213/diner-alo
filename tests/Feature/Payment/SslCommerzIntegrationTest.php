@@ -43,18 +43,38 @@ class SslCommerzIntegrationTest extends TestCase
     {
         $response = $this->postJson(route('donation.sslcommerz.initiate'), []);
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name', 'mobile_number', 'email', 'amount', 'payment_method']);
+        // Reference workflow requires fund, amount, terms and contact/name
+        $response->assertJsonValidationErrors(['donation_fund_id', 'amount', 'terms']);
     }
 
     /** @test */
     public function donation_initiate_rejects_minimum_amount(): void
     {
+        $categoryId = \Illuminate\Support\Facades\DB::table('project_categories')->insertGetId([
+            'name_bn' => 'টেস্ট',
+            'name_en' => 'Test',
+            'description' => 'Test category',
+            'color' => 'green',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $fundId = \Illuminate\Support\Facades\DB::table('donation_funds')->insertGetId([
+            'category_id' => $categoryId,
+            'name_bn' => 'টেস্ট ফান্ড',
+            'name_en' => 'Test Fund',
+            'description' => 'Test',
+            'minimum_amount' => 100,
+            'suggested_amounts' => '[]',
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $fund = (object) ['id' => $fundId];
         $response = $this->postJson(route('donation.sslcommerz.initiate'), [
-            'name' => 'Test Donor',
-            'mobile_number' => '01712345678',
-            'email' => 'test@example.com',
+            'donation_fund_id' => $fund->id,
+            'contact' => 'test@example.com',
             'amount' => 50,
-            'payment_method' => 'sslcommerz',
+            'terms' => true,
         ]);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['amount']);
@@ -134,7 +154,8 @@ class SslCommerzIntegrationTest extends TestCase
             'currency' => 'BDT',
         ]));
 
-        $response->assertRedirect('/');
+        // Idempotent callback: already successful payment should redirect to success page (not home)
+        $response->assertRedirect(route('donation.success', $donation->id));
         $donation->refresh();
         $this->assertEquals('successful', $donation->status);
     }

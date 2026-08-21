@@ -72,10 +72,10 @@
                             <div class="w-12 h-12 mx-auto bg-emerald-100 rounded-xl flex items-center justify-center mb-5">
                                 <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4-.89-4-2s1.79-2 4-2 4 .89 4 2-1.79 2-4 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m-8-5c0-2.21 1.79-4 4-4s4 1.79 4 4"></path></svg>
                             </div>
-                            <h3 class="text-2xl font-bold text-emerald-600 mb-3 font-bangla">{{ $fund->name }}</h3>
+                            <h3 class="text-2xl font-bold text-emerald-600 mb-3 font-bangla">{{ $fund->name_bn ?? $fund->name_en }}</h3>
                             <p class="text-gray-700 mb-4 font-bangla">{{ Str::limit($fund->description, 100) }}</p>
                             <div class="text-3xl font-bold text-emerald-600 mb-4 font-bangla">
-                                মাসিক ৳{{ number_format($fund->target_amount, 0) }}+
+                                ৳{{ number_format($fund->minimum_amount ?? 100, 0) }}+
                             </div>
                             <a href="{{ route('donation.create') }}" class="bg-emerald text-white px-6 py-3 rounded-full font-medium hover:bg-emerald-dark transition-colors inline-block font-bangla">
                                 দান করুন
@@ -368,59 +368,70 @@
         </div>
     </section>
 
-    <!-- Donation CTA -->
-    <section id="donate" class="py-24 bg-[#16a34a]">
+    <!-- Donation CTA - Reference DonationCard Workflow -->
+    <section id="donate" class="py-16 bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mx-auto text-center text-white">
-                <h2 class="text-3xl md:text-4xl font-bold mb-6 font-bangla">দান করুন এবং জীবনের আলো বানান</h2>
-                <p class="text-gray-200 text-lg mb-8 max-w-2xl mx-auto font-bangla">
-                    আপনার ছোট্ট সহায়তা কারোর জীবনে চুক্তিকরভাবে পরিবর্তন আনতে পারে। প্রতিটি দানই একটি মানুষের জীবনে আলোর ঝলক জাগায়।
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto">
-                    <div>
-                        <h3 class="text-xl font-medium mb-4 font-bangla">দানকারীর পরিমাণ</h3>
-                        <div class="space-y-2">
-                            <button onclick="setAmount(500)" class="donation-btn w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                ৳500
-                            </button>
-                            <button onclick="setAmount(1000)" class="donation-btn w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                ৳1,000
-                            </button>
-                            <button onclick="setAmount(2500)" class="donation-btn w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                ৳2,500
-                            </button>
-                            <button onclick="setAmount(5000)" class="donation-btn w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                ৳5,000
-                            </button>
-                            <button onclick="setAmount(10000)" class="donation-btn w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                ৳10,000
-                            </button>
-                            <button onclick="document.getElementById('customAmount').value=''" class="donation-btn w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                কাস্টম পরিমাণ
-                            </button>
+            <div class="max-w-5xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="text-white">
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4 font-bangla leading-tight">দান করুন এবং<br>জীবনের আলো বানান</h2>
+                        <p class="text-white/80 mb-6 font-bangla">আপনার ছোট্ট সহায়তা কারোর জীবনে পরিবর্তন আনতে পারে। প্রতিটি দান স্বচ্ছতার সাথে ব্যয় করা হয়।</p>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="px-3 py-1 bg-white/15 rounded-full">১০০% স্বচ্ছ</span>
+                            <span class="px-3 py-1 bg-white/15 rounded-full">SSL সুরক্ষিত</span>
+                            <span class="px-3 py-1 bg-white/15 rounded-full">তাৎক্ষণিক রসিদ</span>
                         </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-medium mb-4 font-bangla">পেমেন্ট পদ্ধতি</h3>
-                        <div class="space-y-3">
-                            <div class="bg-white/10 px-4 py-3 rounded-lg font-bangla">
-                                <p class="text-emerald-400 font-medium">bKash</p>
-                                <p class="text-gray-300 text-sm">০১৭১২৩৪৫৬৭৮</p>
-                            </div>
-                            <div class="bg-white/10 px-4 py-3 rounded-lg font-bangla">
-                                <p class="text-gold-400 font-medium">Nagad</p>
-                                <p class="text-gray-300 text-sm">০১৭১২৩৪৫৬৭৮</p>
-                            </div>
-                            <div class="bg-white/10 px-4 py-3 rounded-lg font-bangla">
-                                <p class="text-gold-400 font-medium">Rocket</p>
-                                <p class="text-gray-300 text-sm">০১৭১২৩৪৫৬৭৮</p>
-                            </div>
+
+                    <!-- Inline Donation Card (reference: fund → contact → amount → donate) -->
+                    <div class="bg-white rounded-2xl shadow-2xl p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center"><svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
+                            <h3 class="font-bold text-gray-900 font-bangla">দ্রুত অনুদান</h3>
+                            <span class="ml-auto text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">সর্বনিম্ন ১০০৳</span>
                         </div>
+
+                        <form action="{{ route('donation.sslcommerz.initiate') }}" method="POST" id="homeDonationForm" class="space-y-4">
+                            @csrf
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1 font-bangla">ফান্ড সিলেক্ট করুন *</label>
+                                <select name="donation_fund_id" required class="w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-bangla bg-white">
+                                    <option value="">ফান্ড সিলেক্ট করুন</option>
+                                    @foreach($donationFunds as $fund)
+                                        <option value="{{ $fund->id }}">{{ $fund->name_bn }} / {{ $fund->name_en }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1 font-bangla">ফোন নম্বর / ইমেইল *</label>
+                                <input type="text" name="contact" required placeholder="ফোন নম্বর / ইমেইল লিখুন" class="w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 text-sm font-bangla">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1 font-bangla">পরিমাণ (টাকা) *</label>
+                                <div class="grid grid-cols-3 gap-2 mb-2">
+                                    @foreach([500,1000,2500] as $a)
+                                        <button type="button" onclick="document.querySelector('#homeDonationForm [name=amount]').value={{ $a }}" class="py-2 border rounded-lg text-sm hover:bg-emerald-50 hover:border-emerald-300">৳{{ $a }}</button>
+                                    @endforeach
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">৳</span>
+                                    <input type="number" name="amount" required min="100" placeholder="পরিমাণ লিখুন" class="w-full pl-7 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 text-right">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">BDT</span>
+                                </div>
+                            </div>
+
+                            <label class="flex gap-2 text-xs text-gray-600 font-bangla">
+                                <input type="checkbox" name="terms" value="1" required class="rounded text-emerald-600">
+                                <span>আমি <a href="#" class="text-emerald-600 underline">শর্তাবলী</a>, <a href="#" class="text-emerald-600 underline">গোপনীয়তা</a> ও <a href="#" class="text-emerald-600 underline">ফেরত নীতি</a>-তে সম্মত।</span>
+                            </label>
+
+                            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-700 hover:to-teal-700 shadow-lg font-bangla">দান করুন</button>
+                            <p class="text-center text-xs text-gray-400 font-bangla">bKash • Nagad • Rocket • Card • Bank → SSLCommerz</p>
+                        </form>
                     </div>
                 </div>
-                <a href="{{ route('donation.create') }}" class="mt-8 bg-white text-emerald-600 px-8 py-3 rounded-full font-medium hover:bg-emerald-100 transition-colors text-lg font-bangla">
-                    দানের ফর্মে যান
-                </a>
             </div>
         </div>
     </section>

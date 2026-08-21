@@ -1,235 +1,194 @@
 @extends('layouts.front')
 @section('title', 'দান করুন')
-
 @section('content')
 
-    <!-- Donation Form Header -->
-    <section class="py-16 bg-gray-900">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto text-center">
-                <h2 class="text-3xl md:text-4xl font-bold text-emerald-400 mb-4 bengali">
-                    দান করুন
-                </h2>
-                <p class="text-gray-400 text-lg mb-8 max-w-2xl mx-auto bengali">
-                    আপনার értékপূর্ণ অনুদানের মাধ্যমে হস্তঅভি[\u200c]বাদীদের জীবন পরিবর্তন করুন।
-                </p>
+    <!-- Hero / Header matching reference DonationCard context -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white py-10 md:py-14">
+        <div class="absolute inset-0 opacity-30 pointer-events-none">
+            <div class="absolute top-10 left-10 w-96 h-96 bg-gradient-to-br from-emerald-100/40 to-transparent rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-10 w-80 h-80 bg-gradient-to-tr from-amber-100/30 to-transparent rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative container mx-auto px-4 sm:px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700 mb-4">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                নিরাপদ অনুদান
             </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3 font-bangla">দান করুন</h1>
+            <p class="text-gray-500 max-w-2xl mx-auto font-bangla">আপনার মূল্যবান অনুদানের মাধ্যমে অসহায় মানুষের জীবন পরিবর্তন করুন। প্রতিটি টাকা স্বচ্ছতার সাথে ব্যয় করা হয়।</p>
         </div>
     </section>
 
-    <!-- Donation Form -->
-    <section class="py-12 bg-white">
+    <!-- Donation Form Card - Reference Style -->
+    <section class="py-8 md:py-12 bg-[#f8f9fa]">
         <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto">
-                <form action="{{ route('donation.store') }}" method="POST" class="space-y-6">
-                    @csrf
-
-                    <!-- Donor Information -->
-                    <div>
-                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengali">দনকারী তথ্য</h3>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Full Name</label>
-                                <input type="text" name="name" required
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-                                    placeholder="আপনার পূর্ণ নাম">
+            <div class="max-w-xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+                    <!-- Card Header -->
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-5 text-white">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Mobile Number</label>
-                                <input type="tel" name="mobile_number" required
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-                                    placeholder="+৮৮০ ১৭১২৩৪৫৬৭৮">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Email Address</label>
-                            <input type="email" name="email" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-                                placeholder="আইমেইল@এড্রেস.কম">
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Anonymous Donation</label>
-                                <div class="space-y-2">
-                                    <label class="flex items-center px-4 py-2 border rounded-lg hover:border-emerald-300 cursor-pointer">
-                                        <input type="radio" name="is_anonymous" value="1"
-                                            class="w-4 h-4 rounded border-emerald-600 accent-emerald-600">
-                                        <span>হ্যাঁ, আমি গোপন রাখতে চাই</span>
-                                    </label>
-                                    <label class="flex items-center px-4 py-2 border rounded-lg hover:border-emerald-300 cursor-pointer">
-                                        <input type="radio" name="is_anonymous" value="0" checked
-                                            class="w-4 h-4 rounded border-gray-600">
-                                        <span>না, আমার নাম প্রকাশ করুন</span>
-                                    </label>
-                                </div>
+                                <h2 class="font-bold text-lg font-bangla">দ্রুত অনুদান করুন</h2>
+                                <p class="text-white/80 text-xs font-bangla">সর্বনিম্ন ১০০ টাকা • নিরাপদ পেমেন্ট</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Donation Details -->
-                    <div>
-                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengali">দানের বিবরণ</h3>
+                    <form action="{{ route('donation.sslcommerz.initiate') }}" method="POST" id="donationForm" class="p-6 space-y-5">
+                        @csrf
+                        @if($errors->any())
+                            <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm font-bangla">
+                                <ul class="list-disc list-inside space-y-1">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm font-bangla">{{ session('error') }}</div>
+                        @endif
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Donation Amount</label>
-                                <div class="space-y-2">
-                                    <button type="button" class="w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                        ৳500
-                                    </button>
-                                    <button type="button" class="w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                        ৳1,000
-                                    </button>
-                                    <button type="button" class="w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                        ৳2,500
-                                    </button>
-                                    <button type="button" class="w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                        ৳5,000
-                                    </button>
-                                    <button type="button" class="w-full py-3 px-4 bg-white text-emerald-600 font-medium rounded-full hover:bg-emerald-100 transition-colors text-sm">
-                                        ৳10,000
-                                    </button>
-                                    <input type="number" name="amount" min="100"
-                                        class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors text-right"
-                                        placeholder="Custom amount (৳)">
+                        <!-- Fund Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 font-bangla">ফান্ড সিলেক্ট করুন <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select name="donation_fund_id" id="fundSelect" required class="w-full px-4 py-3.5 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white appearance-none font-bangla text-sm">
+                                    <option value="">ফান্ড সিলেক্ট করুন</option>
+                                    @foreach($funds as $fund)
+                                        <option value="{{ $fund->id }}" {{ old('donation_fund_id') == $fund->id ? 'selected' : '' }}>{{ $fund->name_bn }} / {{ $fund->name_en }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                 </div>
                             </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Donation Category</label>
-                                <select name="donation_fund_id"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors appearance-none">
-                                    <option value="">Category selection...</option>
-                                    <?php
-                                    $funds = [
-                                        ['id' => null, 'name_bn' => 'সাধারণ তহবিল', 'name_en' => 'General Tithe'],
-                                        ['id' => null, 'name_bn' => 'শিক্ষা', 'name_en' => 'Education'],
-                                        ['id' => null, 'name_bn' => 'খাদ্য', 'name_en' => 'Food'],
-                                        ['id' => null, 'name_bn' => 'চিকিৎসা', 'name_en' => 'Healthcare'],
-                                        ['id' => null, 'name_bn' => 'জরুরি ত্রাণ', 'name_en' => 'Emergency Relief'],
-                                        ['id' => null, 'name_bn' => 'যাকাত', 'name_en' => 'Zakat'],
-                                        ['id' => null, 'name_bn' => 'সদকা', 'name_en' => 'Sadaqah'],
-                                        ['id' => null, 'name_bn' => 'প্রজেক্ট-ভিত্তিক দান', 'name_en' => 'Project-based Donation'],
-                                    ];
-                                    foreach ($funds as $fund): ?>
-                                        <option value="<?= $fund['id'] ?>"
-                                            <?= ($donation && $donation->donation_fund_id == $fund['id']) ? 'selected' : '' ?>>
-                                            <?= $fund['name_bn'] ?> / <?= $fund['name_en'] ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
+                            @error('donation_fund_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                        <!-- Project Selection -->
+                        <!-- Contact (Phone / Email) -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Select Project (Optional)</label>
-                            <select name="project_id"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors appearance-none">
-                                <option value="">Select a project...</option>
-                                <?php foreach ($projects as $project): ?>
-                                    <option value="<?= $project->id ?>">
-                                        <?= $project->title ?>
-                                    </option>
-                                <?php endforeach; ?>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 font-bangla">ফোন নম্বর / ইমেইল <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.986a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </span>
+                                <input type="text" name="contact" id="contactInput" value="{{ old('contact', old('email') ?: old('mobile_number')) }}" required placeholder="ফোন নম্বর / ইমেইল লিখুন" class="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-bangla text-sm" />
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1 font-bangla">যেমন: 01712345678 অথবা example@mail.com</p>
+                            @error('contact') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <!-- Amount with quick selects -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 font-bangla">পরিমাণ (টাকা) <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-3 gap-2 mb-3">
+                                @foreach([500,1000,2500,5000,10000,20000] as $preset)
+                                    <button type="button" data-amount="{{ $preset }}" class="amount-preset px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-medium hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">৳{{ number_format($preset) }}</button>
+                                @endforeach
+                            </div>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-3 flex items-center text-gray-500 font-bold">৳</span>
+                                <input type="number" name="amount" id="amountInput" value="{{ old('amount') }}" required min="100" max="1000000" step="1" placeholder="পরিমাণ লিখুন" class="w-full pl-8 pr-20 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-right font-medium" />
+                                <span class="absolute inset-y-0 right-3 flex items-center text-xs text-gray-400 font-bangla">BDT</span>
+                            </div>
+                            @error('amount') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <p class="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2 font-bangla">সর্বনিম্ন অনুদান ১০০ টাকা।</p>
+                        </div>
+
+                        <!-- Project (optional, collapsible) -->
+                        @if($projects->count())
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 font-bangla">প্রজেক্ট (ঐচ্ছিক)</label>
+                            <select name="project_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white font-bangla text-sm">
+                                <option value="">প্রজেক্ট নির্বাচন করুন</option>
+                                @foreach($projects as $project)
+                                    <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>{{ $project->title }}</option>
+                                @endforeach
                             </select>
                         </div>
+                        @endif
 
-                        <!-- Donor Message -->
+                        <!-- Message -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Message (Optional)</label>
-                            <textarea name="message" rows="3"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors resize-none bengali"
-                                placeholder="আপনার বার্তা বা dedicó here"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Payment Method -->
-                    <div>
-                        <h3 class="text-lg font-medium text-emerald-600 mb-4 bengali">পেমেন্ট মেথড</h3>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">bKash</label>
-                                <div class="px-4 py-3 border border-emerald-200 rounded-lg bg-emerald-50">
-                                    <p class="text-emerald-600 font-medium">Mobile: 01712345678</p>
-                                    <p class="text-gray-500 text-sm">Scan or send money to the number above</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Nagad</label>
-                                <div class="px-4 py-3 border border-gold-200 rounded-lg bg-gold-50">
-                                    <p class="text-gold-600 font-medium">Mobile: 01712345678</p>
-                                    <p class="text-gray-500 text-sm">Send money via Nagad</p>
-                                </div>
-                            </div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 font-bangla">বার্তা (ঐচ্ছিক)</label>
+                            <textarea name="message" rows="2" placeholder="আপনার বার্তা লিখুন..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none font-bangla text-sm">{{ old('message') }}</textarea>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Card</label>
-                                <div class="px-4 py-3 border rounded-lg bg-white shadow-sm">
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <input type="text" placeholder="Card Number" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                        <input type="text" placeholder="MM/YY" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                    </div>
-                                    <div class="grid grid-cols-3 gap-2 mt-2">
-                                        <input type="text" placeholder="CVV" class="w-20 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                        <input type="text" placeholder="Amount" class="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                        <select class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                            <option>Expiry</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Hidden fields for backward compat -->
+                        <input type="hidden" name="payment_method" value="sslcommerz">
+                        <input type="hidden" name="is_anonymous" value="0">
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2 bengali">Bank Transfer</label>
-                                <div class="px-4 py-3 border rounded-lg bg-white shadow-sm">
-                                    <p class="text-gray-600 text-sm">Account:Dummy Account Number</p>
-                                    <p class="text-gray-600 text-sm">Bank:Dummy Bank Name</p>
-                                    <p class="text-gray-600 text-sm">Branch:Dummy Branch</p>
-                                </div>
-                            </div>
+                        <!-- Terms -->
+                        <label class="flex gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100 cursor-pointer hover:bg-emerald-50/50 transition-colors">
+                            <input type="checkbox" name="terms" value="1" required id="termsCheck" class="mt-1 w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                            <span class="text-xs text-gray-600 leading-relaxed font-bangla">
+                                আমি <a href="#" class="text-emerald-600 hover:underline">শর্তাবলী</a>, <a href="#" class="text-emerald-600 hover:underline">গোপনীয়তা নীতি</a> এবং <a href="#" class="text-emerald-600 hover:underline">ফেরত নীতি</a>-তে সম্মতি দিচ্ছি।
+                            </span>
+                        </label>
+                        @error('terms') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
+
+                        <!-- Donate Button -->
+                        <button type="submit" id="donateBtn" class="w-full py-4 px-8 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 font-bangla text-base">
+                            <span id="donateText">দান করুন</span>
+                            <svg id="donateSpinner" class="hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            <svg id="donateArrow" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </button>
+
+                        <!-- Secure badge -->
+                        <div class="flex items-center justify-center gap-4 text-xs text-gray-400 pt-2">
+                            <span class="flex items-center gap-1"><svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> নিরাপদ পেমেন্ট</span>
+                            <span>•</span>
+                            <span>SSLCommerz দ্বারা সুরক্ষিত</span>
+                            <span>•</span>
+                            <span>১০০% স্বচ্ছ</span>
                         </div>
-
-                        <div class="mt-6">
-                            <button type="submit"
-                                class="w-full py-4 px-8 bg-emerald text-white font-medium rounded-full hover:bg-emerald-dark transition-colors text-lg">
-                                পেমেন্ট পোর্টালে যাওয়
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Thank You Section -->
-    <section class="py-16 bg-emerald-50">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto text-center">
-                <div class="w-20 h-20 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-6">
-                    <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2v6m-4-2v-6l-4-2v-6m4 2v6m-4-2v-6L12 3v6l-4 2v6M5 11h14m0 0v3a4 4 0 004 4h3a4 4 0 014 4v3m-8-3v12a2 2 0 002 2h2a2 2 0 002-2v-5m-12-2v5"></path></svg>
+                    </form>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-emerald-600 mb-4 bengali">
-                    ধন্যবাদ!
-                </h2>
-                <p class="text-gray-400 text-lg mb-6 bengali">
-                    আপনার দানের জন্য গ্রামীণ অসাধন পায়ের lifestyle in rural areas।
-                </p>
-                <p class="text-gray-500 text-sm bengali">
-                    আপনার_transaction_id: DA-2026-00001
-                </p>
-                <a href="{{ route('home') }}"
-                    class="bg-white text-emerald-600 px-6 py-3 rounded-full font-medium hover:bg-emerald-100 transition-colors text-lg">
-                   _home_going
-                </a>
+
+                <!-- Payment partners -->
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs text-gray-400">
+                    <span class="font-bangla">পেমেন্ট পার্টনার:</span>
+                    <span class="px-3 py-1 bg-white border rounded-lg">bKash</span>
+                    <span class="px-3 py-1 bg-white border rounded-lg">Nagad</span>
+                    <span class="px-3 py-1 bg-white border rounded-lg">Rocket</span>
+                    <span class="px-3 py-1 bg-white border rounded-lg">Visa/Mastercard</span>
+                    <span class="px-3 py-1 bg-white border rounded-lg">Bank</span>
+                </div>
             </div>
         </div>
     </section>
+
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const amountInput = document.getElementById('amountInput');
+    const presets = document.querySelectorAll('.amount-preset');
+    const form = document.getElementById('donationForm');
+    const btn = document.getElementById('donateBtn');
+    const spinner = document.getElementById('donateSpinner');
+    const text = document.getElementById('donateText');
+    const arrow = document.getElementById('donateArrow');
+
+    presets.forEach(b => {
+        b.addEventListener('click', () => {
+            presets.forEach(x => x.classList.remove('bg-emerald-600','text-white','border-emerald-600'));
+            b.classList.add('bg-emerald-600','text-white','border-emerald-600');
+            amountInput.value = b.dataset.amount;
+            amountInput.focus();
+        });
+    });
+
+    form.addEventListener('submit', function() {
+        btn.disabled = true;
+        spinner.classList.remove('hidden');
+        arrow.classList.add('hidden');
+        text.textContent = 'প্রক্রিয়াকরণ...';
+    });
+});
+</script>
 @endsection

@@ -39,6 +39,24 @@ class SslCommerzPaymentController extends Controller
 
         $this->processCallback($tranId, $amount, $currency, $request->all(), 'success');
 
+        // Resolve donation for proper redirect
+        $donation = Donation::where('transaction_id', $tranId)->first();
+        if (!$donation) {
+            $tx = Transaction::where('gateway_session_id', $tranId)->orWhere('gateway_transaction_id', $tranId)->first();
+            $donation = $tx?->donation;
+        }
+        if ($donation) {
+            $donation->refresh();
+            if ($donation->status === 'successful') {
+                return redirect()->route('donation.success', $donation->id)->with('success', 'আপনার অবদান সফলভাবে গৃহীত হয়েছে।');
+            }
+            if ($donation->status === 'failed') {
+                return redirect()->route('donation.failed', $donation->id)->with('error', 'পেমেন্ট যাচাইকরণ ব্যর্থ হয়েছে।');
+            }
+            // still pending/processing
+            return redirect()->route('donation.portal', $donation->id)->with('message', 'পেমেন্ট যাচাই করা হচ্ছে।');
+        }
+
         return redirect()->route('home')->with('success', 'আপনার অবদান সফলভাবে গৃহীত হয়েছে।');
     }
 
@@ -59,8 +77,20 @@ class SslCommerzPaymentController extends Controller
             $this->processCallback($tranId, $amount, $currency, $request->all(), 'failed');
         }
 
+        // Try donation-specific redirect
+        if ($tranId) {
+            $donation = Donation::where('transaction_id', $tranId)->first();
+            if (!$donation) {
+                $tx = Transaction::where('gateway_session_id', $tranId)->orWhere('gateway_transaction_id', $tranId)->first();
+                $donation = $tx?->donation;
+            }
+            if ($donation) {
+                return redirect()->route('donation.failed', $donation->id)->with('error', 'পেমেন্ট ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            }
+        }
+
         $failRoute = $this->determineFailRedirect($tranId);
-        return redirect()->to($failRoute)->with('error', 'পেমেন্ট ব্যর্হত হয়েছে। কোটিপত চেষ্টা করুন অথবা অন্য পদ্ধতিতে দান করুন।');
+        return redirect()->to($failRoute)->with('error', 'পেমেন্ট ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
     }
 
     /**
@@ -78,6 +108,17 @@ class SslCommerzPaymentController extends Controller
 
         if ($tranId) {
             $this->processCallback($tranId, $amount, $currency, $request->all(), 'cancelled');
+        }
+
+        if ($tranId) {
+            $donation = Donation::where('transaction_id', $tranId)->first();
+            if (!$donation) {
+                $tx = Transaction::where('gateway_session_id', $tranId)->orWhere('gateway_transaction_id', $tranId)->first();
+                $donation = $tx?->donation;
+            }
+            if ($donation) {
+                return redirect()->route('donation.cancelled', $donation->id)->with('message', 'পেমেন্ট বাতিল করা হয়েছে।');
+            }
         }
 
         $cancelRoute = $this->determineFailRedirect($tranId);
@@ -204,11 +245,9 @@ class SslCommerzPaymentController extends Controller
                 // Update donation status
                 $this->updateDonationStatus($transaction, 'successful');
 
-                // Update donation fund balance if applicable
+                // Donation fund balance is derived via donations sum; no direct increment needed (schema has no current_amount)
+                // Log successful processing for admin visibility
                 $donation = $transaction->donation;
-                if ($donation && $donation->donation_fund_id) {
-                    $donation->fund?->increment('current_amount', $donation->amount);
-                }
 
                 Log::info('SSLCommerz payment verified and processed', [
                     'tran_id' => $tranId,

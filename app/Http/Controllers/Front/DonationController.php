@@ -22,7 +22,7 @@ class DonationController extends Controller
      */
     public function create()
     {
-        $funds = DonationFund::where('is_active', true)->get();
+        $funds = DonationFund::where('is_active', true)->orderBy('id')->get();
         $projects = Project::where('status', 'running')->take(5)->get();
 
         return view('front.donation.create', compact('funds', 'projects'))->with('donation', null);
@@ -30,20 +30,72 @@ class DonationController extends Controller
 
     /**
      * Initialize a donation and redirect to SSLCommerz.
+     * Supports reference workflow: fund, contact (phone/email), amount, terms.
+     * Also retains backward compat for name/mobile/email split.
      */
     public function initiateSslCommerz(Request $request, SslCommerzGateway $gateway)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'mobile_number' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'amount' => 'required|numeric|min:100',
-            'payment_method' => 'required|string',
-            'donation_fund_id' => 'nullable|exists:donation_funds,id',
+            'donation_fund_id' => 'required|exists:donation_funds,id',
+            'contact' => 'required_without_all:name,email,mobile_number|string|max:255',
+            'name' => 'required_without:contact|string|max:255',
+            'mobile_number' => 'required_without:contact|string|max:20',
+            'email' => 'required_without:contact|email|max:255',
+            'amount' => 'required|numeric|min:100|max:1000000',
+            'payment_method' => 'nullable|string|in:sslcommerz,bkash,nagad,rocket,card,bank,manual',
+            'terms' => 'required|accepted',
             'project_id' => 'nullable|exists:projects,id',
             'message' => 'nullable|string|max:500',
-            'is_anonymous' => 'boolean',
+            'is_anonymous' => 'nullable|boolean',
+        ], [
+            'donation_fund_id.required' => 'অনুগ্রহ করে একটি ফান্ড নির্বাচন করুন।',
+            'contact.required_without_all' => 'ফোন নম্বর বা ইমেইল প্রদান করুন।',
+            'name.required_without' => 'নাম আবশ্যক।',
+            'mobile_number.required_without' => 'মোবাইল নম্বর আবশ্যক।',
+            'email.required_without' => 'ইমেইল আবশ্যক।',
+            'amount.required' => 'অনুদানের পরিমাণ আবশ্যক।',
+            'amount.min' => 'সর্বনিম্ন অনুদান ১০০ টাকা।',
+            'terms.accepted' => 'অনুগ্রহ করে শর্তাবলীতে সম্মতি দিন।',
+            'terms.required' => 'অনুগ্রহ করে শর্তাবলীতে সম্মতি দিন।',
         ]);
+
+        // Resolve contact: priority to explicit mobile/email, else parse contact field
+        $email = $validated['email'] ?? null;
+        $mobile = $validated['mobile_number'] ?? null;
+        $name = $validated['name'] ?? null;
+
+        if (!empty($validated['contact'])) {
+            $contact = trim($validated['contact']);
+            if (filter_var($contact, FILTER_VALIDATE_EMAIL)) {
+                $email = $email ?: $contact;
+            } else {
+                // Assume phone: normalize
+                $mobile = $mobile ?: $contact;
+            }
+        }
+
+        // Final validation: at least one contact must be present
+        if (empty($email) && empty($mobile)) {
+            return back()->withErrors(['contact' => 'ফোন নম্বর বা ইমেইল প্রদান করুন।'])->withInput();
+        }
+
+        // If email still empty, synthesize placeholder for donor record (donors.email unique)
+        if (empty($email)) {
+            $normalizedPhone = preg_replace('/[^0-9]/', '', $mobile);
+            $email = 'donor_'.$normalizedPhone.'@placeholder.local';
+        }
+        if (empty($name)) {
+            $name = $email !== 'donor_'.preg_replace('/[^0-9]/','',$mobile).'@placeholder.local' ? explode('@', $email)[0] : 'Donor '.$mobile;
+        }
+        if (empty($mobile)) {
+            $mobile = '00000000000';
+        }
+
+        $validated['email'] = $email;
+        $validated['mobile_number'] = $mobile;
+        $validated['name'] = $name;
+        $validated['payment_method'] = $validated['payment_method'] ?? 'sslcommerz';
+        $validated['is_anonymous'] = $validated['is_anonymous'] ?? false;
 
         try {
             $result = null;
@@ -94,14 +146,15 @@ class DonationController extends Controller
                 ]);
 
                 // Initialize SSLCommerz payment
+                $fundName = $validated['donation_fund_id']
+                    ? ($donation->fund?->name_bn ?? $donation->fund?->name_en ?? 'Donation')
+                    : 'Donation';
                 $paymentData = [
                     'total_amount' => $validated['amount'],
                     'currency' => 'BDT',
                     'tran_id' => $internalTransactionId,
                     'product_category' => 'donation',
-                    'product_name' => $validated['donation_fund_id']
-                        ? ($donation->fund?->name_en ?? 'Donation')
-                        : 'Donation',
+                    'product_name' => $fundName,
                     'product_profile' => 'general',
                     'cus_name' => $validated['name'],
                     'cus_email' => $validated['email'],
@@ -150,7 +203,7 @@ class DonationController extends Controller
     }
 
     /**
-     * Store a new donation (legacy endpoint for non-SSLCommerz methods).
+     * Store a new donation (now creates pending, requires verification - no auto-success).
      */
     public function store(Request $request)
     {
@@ -158,15 +211,16 @@ class DonationController extends Controller
             'name' => 'required|string|max:255',
             'mobile_number' => 'required|string|max:20',
             'email' => 'required|email|max:255',
-            'amount' => 'required|numeric|min:100',
-            'payment_method' => 'required|string',
+            'amount' => 'required|numeric|min:100|max:1000000',
+            'payment_method' => 'required|string|in:sslcommerz,bkash,nagad,rocket,card,bank,manual',
             'donation_fund_id' => 'nullable|exists:donation_funds,id',
             'project_id' => 'nullable|exists:projects,id',
             'message' => 'nullable|string|max:500',
-            'is_anonymous' => 'boolean',
+            'is_anonymous' => 'nullable|boolean',
         ]);
 
-        DB::transaction(function () use ($validated, $request) {
+        $donationId = null;
+        DB::transaction(function () use ($validated, $request, &$donationId) {
             $donor = Donor::firstOrCreate([
                 'email' => $validated['email'],
             ], [
@@ -193,7 +247,7 @@ class DonationController extends Controller
                 'is_anonymous' => $validated['is_anonymous'] ?? false,
             ]);
 
-            $transaction = Transaction::create([
+            Transaction::create([
                 'donation_id' => $donation->id,
                 'user_id' => $request->user()?->id,
                 'gateway' => 'manual',
@@ -205,17 +259,38 @@ class DonationController extends Controller
                 'currency' => 'BDT',
             ]);
 
-            $donation->update(['status' => 'successful']);
-            $transaction->update(['status' => 'successful']);
-
-            // Update donation fund balance
-            if ($donation->donation_fund_id) {
-                $donation->fund?->increment('current_amount', $donation->amount);
-            }
+            $donationId = $donation->id;
         });
 
-        return redirect()->route('donation.success', $donation->id)
-            ->with('success', 'Donation request processed successfully!');
+        return redirect()->route('donation.portal', $donationId)
+            ->with('success', 'অনুদান প্রক্রিয়াধীন। পেমেন্ট সম্পন্ন করুন।');
+    }
+
+    /**
+     * Show payment portal (interstitial before gateway).
+     */
+    public function portal($id)
+    {
+        $donation = Donation::with(['donor', 'fund', 'project', 'transaction'])->findOrFail($id);
+        return view('front.donation.portal', compact('donation'));
+    }
+
+    /**
+     * Show fail page.
+     */
+    public function showFailed($id)
+    {
+        $donation = Donation::with(['donor', 'fund', 'transaction'])->findOrFail($id);
+        return view('front.donation.failed', compact('donation'));
+    }
+
+    /**
+     * Show cancel page.
+     */
+    public function showCancelled($id)
+    {
+        $donation = Donation::with(['donor', 'fund', 'transaction'])->findOrFail($id);
+        return view('front.donation.cancelled', compact('donation'));
     }
 
     /**

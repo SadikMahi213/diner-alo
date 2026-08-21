@@ -9,7 +9,7 @@ class ProjectCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'description'];
+    protected $fillable = ['name_bn', 'name_en', 'description', 'icon', 'color', 'name', 'slug'];
 
     public function projects()
     {
