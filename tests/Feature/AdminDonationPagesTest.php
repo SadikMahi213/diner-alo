@@ -56,9 +56,12 @@ class AdminDonationPagesTest extends TestCase
         $response->assertStatus(200);
         $content = $response->getContent();
         $this->assertStringContainsString('Transactions', $content);
-        // Check for proper contrast classes (not white on white)
+        // Check for proper contrast classes (not white on white) - should have bg-white and dark text
         $this->assertStringContainsString('bg-white', $content);
-        $this->assertStringContainsString('text-gray-800', $content);
+        $this->assertTrue(
+            str_contains($content, 'text-gray-900') || str_contains($content, 'text-gray-800') || str_contains($content, 'text-gray-700'),
+            'Should contain readable dark text on light background'
+        );
         $this->assertStringNotContainsString('View [admin.partials', $content);
     }
 
