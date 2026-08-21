@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>An Nusra Admin Dashboard</title>
+    <title>দ্বীনের আলো - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
     <header class="bg-gray-900 text-white shadow">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                <h1 class="text-xl font-bold text-emerald-400">An Nusra Admin</h1>
+                <h1 class="text-xl font-bold text-emerald-400">দ্বীনের আলো</h1>
                 <span class="text-gray-300 hidden md:inline">হ্যালো, {{ Auth::user()->name }}</span>
             </div>
             <nav class="hidden md:flex items-center space-x-5 text-sm">
@@ -122,7 +122,7 @@
     </main>
 
     <footer class="py-6 text-center text-sm text-gray-400">
-        &copy; 2026 An Nusra Admin • <a href="{{ route('home') }}" class="hover:text-emerald-600">ফ্রন্ট দেখুন</a>
+        &copy; 2026 দ্বীনের আলো - Diner Alo Foundation • <a href="{{ route('home') }}" class="hover:text-emerald-600">ফ্রন্ট দেখুন</a>
     </footer>
 </body>
 </html>

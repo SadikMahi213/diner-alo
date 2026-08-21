@@ -10,7 +10,7 @@
         <div class="relative inset-0 flex items-center justify-center text-center px-4 py-14 sm:px-6 lg:px-8">
             <div class="max-w-3xl mx-auto mt-24 sm:mt-0">
                 <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 font-bangla">
-                    আন-নুসরা ফাউন্ডেশন
+                    দ্বীনের আলো
                 </h1>
                 <p class="text-md text-white/90 mb-8 leading-relaxed font-bangla">
                     আমরা একটি অরাজনৈতিক, অলাভজনক, ধর্মীয়, সামাজিক ও মানবকল্যাণমূলক সংস্থা।

@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="আন-নুসরা ফাউন্ডেশন - মানব পরিবার পরিচালিত গাণসিয়কারিত্বিক সংস্থা। বাংলাদেশের দারিদ্র এবং সামাজিকভাবে পিছড়া communities সাহায্য করে।">
-    <meta name="keywords" content="আন-নুসরা ফাউন্ডেশন, বাঙালি, মানবিক, চ্যারিটি, দান, Zakat, খাদ্য, শিক্ষা, চিকিৎসা, ভোলান্টিয়ার, NGO, Bangladesh">
-    <meta name="author" content="আন-নুসরা ফাউন্ডেশন">
-    <meta property="og:title" content="{{ $pageTitle ?? 'আন-নুসরা ফাউন্ডেশন' }}">
+    <meta name="description" content="দ্বীনের আলো - মানব পরিবার পরিচালিত ইসলামিক সমাজকল্যাণ সংস্থা। বাংলাদেশের দারিদ্র এবং সামাজিকভাবে পিছড়া communities সাহায্য করে।">
+    <meta name="keywords" content="দ্বীনের আলো, Diner Alo, বাঙালি, মানবিক, চ্যারিটি, দান, Zakat, খাদ্য, শিক্ষা, চিকিৎসা, ভোলান্টিয়ার, NGO, Bangladesh">
+    <meta name="author" content="দ্বীনের আলো">
+    <meta property="og:title" content="{{ $pageTitle ?? 'দ্বীনের আলো' }}">
     <meta property="og:description" content="মানুষের মৌলিক অধিকার, শিক্ষা, খাদ্য, চিকিৎসা ও আত্মনির্ভরতার জন্য কাজ করে।">
     <meta property="og:type" content="organization">
     <meta property="og:url" content="{{ url('/') }}">
@@ -14,7 +14,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <link rel="canonical" href="{{ url()->current() }}">
     
-    <title>@yield('title') - আন-নুসরা ফাউন্ডেশন</title>
+    <title>@yield('title') - দ্বীনের আলো</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,7 @@
     <header class="bg-gray-900 text-white sticky top-0 z-50 backdrop-blur-sm border-b border-white/10">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center">
-                <a href="{{ route('home') }}" class="text-xl font-bold text-emerald-400 font-bangla">আন-নুসরা ফাউন্ডেশন</a>
+                <a href="{{ route('home') }}" class="text-xl font-bold text-emerald-400 font-bangla">দ্বীনের আলো</a>
             </div>
             <nav class="hidden md:block">
                 <ul class="flex space-x-8">
@@ -107,7 +107,7 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div>
-                    <h3 class="text-2xl font-bold text-emerald-400 mb-6 font-bangla">আন-নুসরা ফাউন্ডেশন</h3>
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-6 font-bangla">দ্বীনের আলো</h3>
                     <p class="text-gray-400 text-sm font-bangla">মানুষের পাশে, আলোর পথে। আমরা বাংলাদেশের দরিদ্র ও পিছড়া সম্প্রদায়সমূহের মৌলিক অধিকার, শিক্ষা, খাদ্য, চিকিৎসা এবং আত্মনির্ভরতার জন্য কাজ করে।</p>
                 </div>
                 
@@ -155,7 +155,7 @@
             </div>
             
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm font-bangla mb-4 md:mb-0">&copy; 2026 আন-নুসরা ফাউন্ডেশন। সমস্ত অধিকার সংরক্ষিত।</p>
+                <p class="text-gray-400 text-sm font-bangla mb-4 md:mb-0">&copy; 2026 দ্বীনের আলো। সমস্ত অধিকার সংরক্ষিত।</p>
                 <div class="flex space-x-6 md:space-x-8">
                     <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm font-bangla">Privacy Policy</a>
                     <a href="#!" class="text-gray-400 hover:text-emerald-400 transition-colors text-sm font-bangla">Terms & Conditions</a>
