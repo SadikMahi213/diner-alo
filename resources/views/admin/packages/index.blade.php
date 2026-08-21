@@ -4,11 +4,19 @@
 
 @section('content')
 <div class='container mx-auto px-4 py-8'>
-    <h1 class='text-3xl font-bold text-gray-800 mb-6'>Packages</h1>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class='text-3xl font-bold text-gray-800'>Packages</h1>
+        <a href='{{ route('admin.packages.create') }}' class='bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded'>Create Package</a>
+    </div>
     
     @if(session('success'))
         <div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6'>
             {{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6'>
+            {{ session('error') }}
         </div>
     @endif
 
@@ -24,16 +32,16 @@
                 </tr>
             </thead>
             <tbody class='bg-white divide-y divide-gray-200'>
-                @forelse( as )
+                @forelse($packages as $package)
                     <tr>
                         <td class='px-6 py-4 whitespace-nowrap'>
-                            <div class='text-sm font-medium text-gray-900'>{{ ->title }}</div>
+                            <div class='text-sm font-medium text-gray-900'>{{ $package->title }}</div>
                         </td>
                         <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                            {{ \->price }}
+                            ৳{{ number_format($package->price, 2) }}
                         </td>
                         <td class='px-6 py-4 whitespace-nowrap'>
-                            @if(\->is_active)
+                            @if($package->is_active)
                                 <span class='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800'>
                                     Active
                                 </span>
@@ -44,14 +52,11 @@
                             @endif
                         </td>
                         <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                            {{ \->courses->count() }} courses
+                            {{ $package->courses->count() }} courses
                         </td>
                         <td class='px-6 py-4 whitespace-nowrap text-sm font-medium'>
-                            <a href='{{ route('admin.packages.edit', \) }}' class='text-indigo-600 hover:text-indigo-900 mr-3'>Edit</a>
-                            <form action='{{ route('admin.packages.destroy', \) }}' method='POST' class='inline' onsubmit='return confirm(\
-Are
-you
-sure?\)'>
+                            <a href='{{ route('admin.packages.edit', $package) }}' class='text-indigo-600 hover:text-indigo-900 mr-3'>Edit</a>
+                            <form action='{{ route('admin.packages.destroy', $package) }}' method='POST' class='inline' onsubmit='return confirm("Are you sure?")'>
                                 @csrf
                                 @method('DELETE')
                                 <button type='submit' class='text-red-600 hover:text-red-900'>Delete</button>
@@ -67,6 +72,9 @@ sure?\)'>
                 @endforelse
             </tbody>
         </table>
+        <div class="px-6 py-4">
+            {{ $packages->links() }}
+        </div>
     </div>
 </div>
 @endsection

@@ -13,6 +13,7 @@ use App\Http\Controllers\Front\MembershipController;
 use App\Http\Controllers\Front\ContactController;
 use App\Http\Controllers\User\PaymentController as UserPaymentController;
 use App\Http\Controllers\Admin\DinersAloDashboardController;
+use App\Http\Controllers\Admin\DonationFundController;
 use App\Http\Controllers\SslCommerzPaymentController;
 
 /*
@@ -127,4 +128,34 @@ Route::middleware(['web', 'auth', 'admin'])->group(function () {
     Route::get('/admin/packages/{package}/edit', [\App\Http\Controllers\Admin\PackageController::class, 'edit'])->name('admin.packages.edit');
     Route::put('/admin/packages/{package}', [\App\Http\Controllers\Admin\PackageController::class, 'update'])->name('admin.packages.update');
     Route::delete('/admin/packages/{package}', [\App\Http\Controllers\Admin\PackageController::class, 'destroy'])->name('admin.packages.destroy');
+
+    // Donation Funds
+    Route::get('/admin/donation-funds', [DonationFundController::class, 'index'])->name('admin.donation-funds.index');
+    Route::get('/admin/donation-funds/create', [DonationFundController::class, 'create'])->name('admin.donation-funds.create');
+    Route::post('/admin/donation-funds', [DonationFundController::class, 'store'])->name('admin.donation-funds.store');
+    Route::get('/admin/donation-funds/{donationFund}/edit', [DonationFundController::class, 'edit'])->name('admin.donation-funds.edit');
+    Route::put('/admin/donation-funds/{donationFund}', [DonationFundController::class, 'update'])->name('admin.donation-funds.update');
+    Route::delete('/admin/donation-funds/{donationFund}', [DonationFundController::class, 'destroy'])->name('admin.donation-funds.destroy');
+    Route::post('/admin/donation-funds/{donationFund}/toggle', [DonationFundController::class, 'toggle'])->name('admin.donation-funds.toggle');
+
+    // Transactions
+    Route::get('/admin/transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('admin.transactions.index');
+    Route::get('/admin/transactions/{transaction}', [\App\Http\Controllers\Admin\TransactionController::class, 'show'])->name('admin.transactions.show');
+
+    // Orders
+    Route::get('/admin/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
+
+    // Users
+    Route::get('/admin/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
+    Route::post('/admin/users/{user}/toggle', [\App\Http\Controllers\Admin\UserController::class, 'toggle'])->name('admin.users.toggle');
+
+    // Courses
+    Route::get('/admin/courses', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('admin.courses.index');
+    Route::get('/admin/courses/create', [\App\Http\Controllers\Admin\CourseController::class, 'create'])->name('admin.courses.create');
+    Route::post('/admin/courses', [\App\Http\Controllers\Admin\CourseController::class, 'store'])->name('admin.courses.store');
+    Route::get('/admin/courses/{course}/edit', [\App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('admin.courses.edit');
+    Route::put('/admin/courses/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'update'])->name('admin.courses.update');
+    Route::delete('/admin/courses/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('admin.courses.destroy');
 });

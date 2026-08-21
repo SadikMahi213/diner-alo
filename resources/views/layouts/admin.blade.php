@@ -14,9 +14,15 @@
                 <h1 class="text-xl font-bold text-emerald-400">দিনের আলো</h1>
             </div>
             <nav class="hidden md:block">
-                <ul class="flex space-x-6">
-                    <li><a href="{{ route('admin.dashboard') }}" class="hover:text-emerald-300">হোম</a></li>
-                    <li><a href="{{ route('admin.packages.index') }}" class="hover:text-emerald-300">কার্যক্রম</a></li>
+                <ul class="flex space-x-4 text-sm">
+                    <li><a href="{{ route('admin.dashboard') }}" class="hover:text-emerald-300">ড্যাশবোর্ড</a></li>
+                    <li><a href="{{ route('admin.users.index') }}" class="hover:text-emerald-300">ইউজার</a></li>
+                    <li><a href="{{ route('admin.courses.index') }}" class="hover:text-emerald-300">কোর্স</a></li>
+                    <li><a href="{{ route('admin.packages') }}" class="hover:text-emerald-300">প্যাকেজ</a></li>
+                    <li><a href="{{ route('admin.orders.index') }}" class="hover:text-emerald-300">অর্ডার</a></li>
+                    <li><a href="{{ route('admin.donation-funds.index') }}" class="hover:text-emerald-300">ফান্ড</a></li>
+                    <li><a href="{{ route('admin.donations') }}" class="hover:text-emerald-300">দান</a></li>
+                    <li><a href="{{ route('admin.transactions.index') }}" class="hover:text-emerald-300">লেনদেন</a></li>
                     <li><a href="{{ route('home') }}" class="hover:text-emerald-300">ফ্রন্ট</a></li>
                 </ul>
             </nav>
