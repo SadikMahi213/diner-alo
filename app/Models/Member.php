@@ -11,14 +11,20 @@ class Member extends Model
 
     protected $fillable = [
         'user_id',
+        'member_id',
+        'name',
+        'email',
+        'phone',
+        'district',
+        'profession',
         'membership_type',
+        'experience',
         'join_date',
         'expiry_date',
         'status',
-        'phone',
+        'is_active',
         'address',
         'nid',
-        'profession',
     ];
 
     protected $casts = [
