@@ -37,7 +37,7 @@
             <nav class="hidden md:block">
                 <ul class="flex space-x-6">
                     <li><a href="{{ route('admin.dashboard') }}" class="hover:text-emerald-300">ড্যাশবোর্ড</a></li>
-                    <li><a href="{{ route('admin.packages.index') }}" class="hover:text-emerald-300">প্রোগ্রাম</a></li>
+                    <li><a href="{{ route('admin.packages') }}" class="hover:text-emerald-300">প্রোগ্রাম</a></li>
                     <li><a href="{{ route('admin.donations') }}" class="hover:text-emerald-300">দানের হিসাব</a></li>
                     <li><a href="#" class="hover:text-emerald-300">প্রশাসক-panel</a></li>
                 </ul>

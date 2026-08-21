@@ -11,6 +11,7 @@ use App\Models\Member;
 use App\Models\Volunteer;
 use App\Models\BlogPost;
 use App\Models\GalleryAlbum;
+use App\Models\GalleryItem;
 use App\Models\ContactMessage;
 use App\Models\Report;
 use App\Models\Setting;
@@ -18,13 +19,7 @@ use Illuminate\Support\Facades\DB;
 
 class DinersAloDashboardController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('admin');
-    }
+
 
     /**
      * Show the admin dashboard.
@@ -61,7 +56,7 @@ class DinersAloDashboardController extends Controller
         
         // Gallery
         $totalGalleryItems = GalleryItem::count();
-        $publishedGalleryItems = GalleryItem::where('gallery->album->is_published', true)->count();
+        $publishedGalleryItems = GalleryItem::whereHas('album', fn($q) => $q->where('is_published', true))->count();
         
         // Contact messages
         $newContactMessages = ContactMessage::where('status', 'new')->count();

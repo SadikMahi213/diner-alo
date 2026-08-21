@@ -14,6 +14,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\TrustProxies::class,
         ]);
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
+        // CSRF exemption ONLY for external SSLCommerz callbacks (they POST without Laravel token)
+        $middleware->validateCsrfTokens(except: [
+            'sslcommerz/success',
+            'sslcommerz/fail',
+            'sslcommerz/cancel',
+            'sslcommerz/ipn',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
