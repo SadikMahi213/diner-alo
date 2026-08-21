@@ -43,4 +43,22 @@ class VolunteerController extends Controller
     {
         return view('admin.volunteers.show', compact('volunteer'));
     }
+
+    public function approve(Volunteer $volunteer)
+    {
+        $volunteer->update(['status' => 'approved']);
+        return back()->with('success', 'Volunteer approved.');
+    }
+
+    public function reject(Volunteer $volunteer)
+    {
+        $volunteer->update(['status' => 'rejected']);
+        return back()->with('success', 'Volunteer rejected.');
+    }
+
+    public function deactivate(Volunteer $volunteer)
+    {
+        $volunteer->update(['status' => 'inactive']);
+        return back()->with('success', 'Volunteer deactivated.');
+    }
 }

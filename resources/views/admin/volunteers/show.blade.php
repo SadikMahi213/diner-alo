@@ -35,8 +35,31 @@
         </div>
 
         <div class="mt-6 flex flex-wrap gap-3">
-            <span class="text-sm text-gray-500">Actions: Approve/Reject via VolunteerController@approve (to be implemented)</span>
+            @if($volunteer->status === 'pending')
+                <form method="POST" action="{{ route('admin.volunteers.approve', $volunteer) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-sm font-medium" onclick="return confirm('Approve this volunteer?')">Approve</button>
+                </form>
+                <form method="POST" action="{{ route('admin.volunteers.reject', $volunteer) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm" onclick="return confirm('Reject this volunteer?')">Reject</button>
+                </form>
+            @elseif($volunteer->status === 'approved')
+                <form method="POST" action="{{ route('admin.volunteers.deactivate', $volunteer) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2 rounded-lg text-sm" onclick="return confirm('Deactivate this volunteer?')">Deactivate</button>
+                </form>
+            @else
+                <form method="POST" action="{{ route('admin.volunteers.approve', $volunteer) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-sm">Reactivate</button>
+                </form>
+            @endif
+            <a href="{{ route('admin.volunteers') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm">Back to List</a>
         </div>
+        @if(session('success'))
+            <div class="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">{{ session('success') }}</div>
+        @endif
     </div>
 </div>
 @endsection

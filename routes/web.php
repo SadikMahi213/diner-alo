@@ -161,6 +161,16 @@ Route::middleware(['web', 'auth', 'admin'])->group(function () {
     Route::get('/admin/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
     Route::post('/admin/users/{user}/toggle', [\App\Http\Controllers\Admin\UserController::class, 'toggle'])->name('admin.users.toggle');
 
+    // Members - approve workflow
+    Route::post('/admin/members/{member}/approve', [\App\Http\Controllers\Admin\MembershipController::class, 'approve'])->name('admin.members.approve');
+    Route::post('/admin/members/{member}/reject', [\App\Http\Controllers\Admin\MembershipController::class, 'reject'])->name('admin.members.reject');
+    Route::post('/admin/members/{member}/deactivate', [\App\Http\Controllers\Admin\MembershipController::class, 'deactivate'])->name('admin.members.deactivate');
+
+    // Volunteers - approve workflow
+    Route::post('/admin/volunteers/{volunteer}/approve', [\App\Http\Controllers\Admin\VolunteerController::class, 'approve'])->name('admin.volunteers.approve');
+    Route::post('/admin/volunteers/{volunteer}/reject', [\App\Http\Controllers\Admin\VolunteerController::class, 'reject'])->name('admin.volunteers.reject');
+    Route::post('/admin/volunteers/{volunteer}/deactivate', [\App\Http\Controllers\Admin\VolunteerController::class, 'deactivate'])->name('admin.volunteers.deactivate');
+
     // Courses
     Route::get('/admin/courses', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('admin.courses.index');
     Route::get('/admin/courses/create', [\App\Http\Controllers\Admin\CourseController::class, 'create'])->name('admin.courses.create');

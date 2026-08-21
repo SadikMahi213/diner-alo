@@ -41,4 +41,22 @@ class MembershipController extends Controller
         $member->load('user');
         return view('admin.members.show', compact('member'));
     }
+
+    public function approve(Member $member)
+    {
+        $member->update(['status' => 'active', 'is_active' => true]);
+        return back()->with('success', 'Member approved and activated.');
+    }
+
+    public function reject(Member $member)
+    {
+        $member->update(['status' => 'rejected', 'is_active' => false]);
+        return back()->with('success', 'Member rejected.');
+    }
+
+    public function deactivate(Member $member)
+    {
+        $member->update(['status' => 'inactive', 'is_active' => false]);
+        return back()->with('success', 'Member deactivated.');
+    }
 }

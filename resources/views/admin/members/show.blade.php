@@ -29,9 +29,32 @@
             @endif
         </div>
 
-        <div class="mt-6 flex gap-3">
-            <span class="text-sm text-gray-500">Actions: Approve/Reject functionality can be added via MemberController@approve</span>
+        <div class="mt-6 flex flex-wrap gap-3">
+            @if(($member->status ?? ($member->is_active ? 'active' : 'inactive')) === 'pending')
+                <form method="POST" action="{{ route('admin.members.approve', $member) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-sm font-medium" onclick="return confirm('Approve this member?')">Approve & Activate</button>
+                </form>
+                <form method="POST" action="{{ route('admin.members.reject', $member) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm" onclick="return confirm('Reject this member?')">Reject</button>
+                </form>
+            @elseif(($member->status ?? ($member->is_active ? 'active' : 'inactive')) === 'active')
+                <form method="POST" action="{{ route('admin.members.deactivate', $member) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2 rounded-lg text-sm" onclick="return confirm('Deactivate this member?')">Deactivate</button>
+                </form>
+            @else
+                <form method="POST" action="{{ route('admin.members.approve', $member) }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-sm">Reactivate</button>
+                </form>
+            @endif
+            <a href="{{ route('admin.members') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm">Back to List</a>
         </div>
+        @if(session('success'))
+            <div class="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">{{ session('success') }}</div>
+        @endif
     </div>
 </div>
 @endsection
