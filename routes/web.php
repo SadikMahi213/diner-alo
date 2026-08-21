@@ -111,11 +111,21 @@ Route::middleware(['web', 'auth'])->group(function () {
 // Admin Routes (requires auth + admin middleware)
 Route::middleware(['web', 'auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [DinersAloDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/donations', [DinersAloDashboardController::class, 'donationsDatatable'])->name('admin.donations');
+    // HTML admin pages (server-rendered Blade)
+    Route::get('/admin/donations', [\App\Http\Controllers\Admin\DonationController::class, 'index'])->name('admin.donations');
+    Route::get('/admin/donations/{donation}', [\App\Http\Controllers\Admin\DonationController::class, 'show'])->name('admin.donations.show');
+    Route::get('/admin/donors', [\App\Http\Controllers\Admin\DonorController::class, 'index'])->name('admin.donors');
+    Route::get('/admin/donors/{donor}', [\App\Http\Controllers\Admin\DonorController::class, 'show'])->name('admin.donors.show');
+    Route::get('/admin/members', [\App\Http\Controllers\Admin\MembershipController::class, 'index'])->name('admin.members');
+    Route::get('/admin/members/{member}', [\App\Http\Controllers\Admin\MembershipController::class, 'show'])->name('admin.members.show');
+    Route::get('/admin/volunteers', [\App\Http\Controllers\Admin\VolunteerController::class, 'index'])->name('admin.volunteers');
+    Route::get('/admin/volunteers/{volunteer}', [\App\Http\Controllers\Admin\VolunteerController::class, 'show'])->name('admin.volunteers.show');
+    // JSON/DataTables endpoints (for AJAX)
+    Route::get('/admin/donations/data', [DinersAloDashboardController::class, 'donationsDatatable'])->name('admin.donations.data');
     Route::get('/admin/projects', [DinersAloDashboardController::class, 'projectsDatatable'])->name('admin.projects');
-    Route::get('/admin/donors', [DinersAloDashboardController::class, 'donorsDatatable'])->name('admin.donors');
-    Route::get('/admin/volunteers', [DinersAloDashboardController::class, 'volunteersDatatable'])->name('admin.volunteers');
-    Route::get('/admin/members', [DinersAloDashboardController::class, 'membersDatatable'])->name('admin.members');
+    Route::get('/admin/donors/data', [DinersAloDashboardController::class, 'donorsDatatable'])->name('admin.donors.data');
+    Route::get('/admin/volunteers/data', [DinersAloDashboardController::class, 'volunteersDatatable'])->name('admin.volunteers.data');
+    Route::get('/admin/members/data', [DinersAloDashboardController::class, 'membersDatatable'])->name('admin.members.data');
     Route::get('/admin/contacts', [DinersAloDashboardController::class, 'contactMessagesDatatable'])->name('admin.contacts');
     Route::get('/admin/statistics', [DinersAloDashboardController::class, 'statisticsData'])->name('admin.statistics');
     Route::get('/admin/export/donations', [DinersAloDashboardController::class, 'exportDonations'])->name('admin.export.donations');
