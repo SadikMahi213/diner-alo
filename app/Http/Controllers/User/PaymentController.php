@@ -54,16 +54,35 @@ class PaymentController extends Controller
             'payment_method' => 'required|string|in:sslcommerz',
         ]);
 
+        $requestId = Str::uuid()->toString();
+        $storeId = config('sslcommerz.apiCredentials.store_id');
+        $isSandbox = config('sslcommerz.apiDomain') === 'https://sandbox.sslcommerz.com';
+        $endpoint = config('sslcommerz.apiDomain') . config('sslcommerz.apiUrl.make_payment');
+
+        if (empty($storeId) || empty(config('sslcommerz.apiCredentials.store_password'))) {
+            Log::warning('SSLCommerz configuration missing for order payment', [
+                'request_id' => $requestId,
+                'has_store_id' => !empty($storeId),
+                'has_store_password' => !empty(config('sslcommerz.apiCredentials.store_password')),
+                'is_sandbox' => $isSandbox,
+                'endpoint' => $endpoint,
+                'user_id' => $user->id,
+                'package_id' => $package->id,
+                'error_code' => 'SSLCOMMERZ_CONFIGURATION_ERROR',
+            ]);
+            return back()->with('error', 'পেমেন্ট কনফিগারেশন সম্পূর্ণ নয়। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন। (CODE: CONFIG_ERROR)');
+        }
+
+        $order = null;
+        $transaction = null;
+        $result = null;
+        $internalTransactionId = 'ORD-' . date('Y') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
+        while (Order::where('transaction_id', $internalTransactionId)->exists()) {
+            $internalTransactionId = 'ORD-' . date('Y') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
+        }
+
         try {
-            DB::transaction(function () use ($package, $user, $validated, $gateway) {
-                // Generate unique internal transaction ID
-                $internalTransactionId = 'ORD-' . date('Y') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
-
-                while (Order::where('transaction_id', $internalTransactionId)->exists()) {
-                    $internalTransactionId = 'ORD-' . date('Y') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
-                }
-
-                // Create the order record
+            DB::transaction(function () use ($package, $user, &$order, &$transaction, $internalTransactionId) {
                 $order = new Order();
                 $order->user_id = $user->id;
                 $order->package_id = $package->id;
@@ -74,7 +93,6 @@ class PaymentController extends Controller
                 $order->gateway = 'sslcommerz';
                 $order->save();
 
-                // Create transaction record
                 $transaction = new Transaction();
                 $transaction->user_id = $user->id;
                 $transaction->order_id = $order->id;
@@ -88,53 +106,85 @@ class PaymentController extends Controller
                 $transaction->currency = 'BDT';
                 $transaction->description = 'Payment for package: ' . $package->title;
                 $transaction->save();
-
-                // Initialize SSLCommerz payment
-                $paymentData = [
-                    'total_amount' => $package->price,
-                    'currency' => 'BDT',
-                    'tran_id' => $internalTransactionId,
-                    'product_category' => 'course_package',
-                    'product_name' => $package->title,
-                    'product_profile' => 'non-physical-goods',
-                    'cus_name' => $user->name,
-                    'cus_email' => $user->email,
-                    'cus_country' => 'Bangladesh',
-                    'value_a' => $order->id,
-                    'value_b' => $package->id,
-                ];
-
-                $result = $gateway->initialize($paymentData);
-
-                if (!$result['success']) {
-                    $order->update(['status' => 'failed']);
-                    $transaction->update([
-                        'status' => 'failed',
-                        'failure_reason' => $result['message'] ?? 'SSLCommerz initialization failed',
-                    ]);
-                    throw new \RuntimeException($result['message'] ?? 'Payment initialization failed');
-                }
-
-                // Update transaction with gateway session ID
-                $transaction->update([
-                    'status' => 'processing',
-                    'gateway_session_id' => $result['gateway_session_id'],
-                ]);
-
-                // Update order status
-                $order->update(['status' => 'processing']);
             });
 
-            // Redirect to SSLCommerz payment page
+            Log::info('Order pending created', [
+                'request_id' => $requestId,
+                'order_id' => $order->id,
+                'transaction_id' => $internalTransactionId,
+                'user_id' => $user->id,
+                'package_id' => $package->id,
+                'amount' => $package->price,
+                'endpoint' => $endpoint,
+                'is_sandbox' => $isSandbox,
+            ]);
+
+            $paymentData = [
+                'total_amount' => $package->price,
+                'currency' => 'BDT',
+                'tran_id' => $internalTransactionId,
+                'product_category' => 'course_package',
+                'product_name' => $package->title,
+                'product_profile' => 'non-physical-goods',
+                'cus_name' => $user->name,
+                'cus_email' => $user->email,
+                'cus_country' => 'Bangladesh',
+                'value_a' => $order->id,
+                'value_b' => $package->id,
+            ];
+
+            $result = $gateway->initialize($paymentData);
+
+            if (!$result['success']) {
+                $errorCode = str_contains($result['message'] ?? '', 'Store Credential') ? 'SSLCOMMERZ_AUTHENTICATION_ERROR' : 'SSLCOMMERZ_INITIALIZATION_FAILED';
+                $order->update(['status' => 'failed']);
+                $transaction->update(['status' => 'failed', 'failure_reason' => $result['message'] ?? 'SSLCommerz initialization failed']);
+                Log::warning('SSLCommerz order init returned failure', [
+                    'request_id' => $requestId,
+                    'order_id' => $order->id,
+                    'transaction_id' => $internalTransactionId,
+                    'error_code' => $errorCode,
+                    'gateway_message' => $result['message'] ?? null,
+                ]);
+                return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। (' . $errorCode . ')');
+            }
+
+            $transaction->update(['status' => 'processing', 'gateway_session_id' => $result['gateway_session_id']]);
+            $order->update(['status' => 'processing']);
+
+            Log::info('SSLCommerz order initialized', [
+                'request_id' => $requestId,
+                'order_id' => $order->id,
+                'transaction_id' => $internalTransactionId,
+                'gateway_session_id' => $result['gateway_session_id'],
+            ]);
+
             return redirect($result['redirect_url']);
 
         } catch (\Throwable $e) {
-            Log::error('Order payment SSLCommerz initialization failed', [
-                'error' => $e->getMessage(),
+            $exceptionClass = get_class($e);
+            $isTimeout = str_contains($e->getMessage(), 'timeout');
+            $errorCode = $isTimeout ? 'SSLCOMMERZ_TIMEOUT' : 'SSLCOMMERZ_INITIALIZATION_FAILED';
+            if (isset($order) && $order && $order->exists && $order->status === 'pending') {
+                try { $order->update(['status' => 'failed']); } catch (\Throwable $inner) {}
+            }
+            if (isset($transaction) && $transaction && $transaction->exists && $transaction->status === 'pending') {
+                try { $transaction->update(['status' => 'failed', 'failure_reason' => $e->getMessage()]); } catch (\Throwable $inner) {}
+            }
+            Log::error('Order payment SSLCommerz initialization exception', [
+                'request_id' => $requestId,
+                'exception_class' => $exceptionClass,
+                'exception_message' => $e->getMessage(),
+                'error_code' => $errorCode,
                 'user_id' => $user->id,
                 'package_id' => $package->id,
+                'transaction_id' => $internalTransactionId ?? null,
+                'endpoint' => $endpoint ?? null,
+                'is_sandbox' => $isSandbox ?? null,
+                'has_store_id' => !empty($storeId),
             ]);
-            return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্হত হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            $debugMessage = app()->environment('local', 'development') ? ' (' . $e->getMessage() . ')' : '';
+            return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।' . $debugMessage);
         }
     }
 }

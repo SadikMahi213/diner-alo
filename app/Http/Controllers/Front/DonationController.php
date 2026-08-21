@@ -97,10 +97,41 @@ class DonationController extends Controller
         $validated['payment_method'] = $validated['payment_method'] ?? 'sslcommerz';
         $validated['is_anonymous'] = $validated['is_anonymous'] ?? false;
 
-        try {
-            $result = null;
+        $requestId = Str::uuid()->toString();
+        $storeId = config('sslcommerz.apiCredentials.store_id');
+        $isSandbox = config('sslcommerz.apiDomain') === 'https://sandbox.sslcommerz.com';
+        $endpoint = config('sslcommerz.apiDomain') . config('sslcommerz.apiUrl.make_payment');
 
-            // Create or find the donor
+        // Step 4: Validate SSLCommerz configuration before attempting payment
+        if (empty($storeId) || empty(config('sslcommerz.apiCredentials.store_password'))) {
+            Log::warning('SSLCommerz configuration missing', [
+                'request_id' => $requestId,
+                'has_store_id' => !empty($storeId),
+                'has_store_password' => !empty(config('sslcommerz.apiCredentials.store_password')),
+                'is_sandbox' => $isSandbox,
+                'endpoint' => $endpoint,
+                'amount' => $validated['amount'] ?? null,
+                'currency' => 'BDT',
+                'gateway' => 'sslcommerz',
+                'fund_id' => $validated['donation_fund_id'] ?? null,
+                'error_code' => 'SSLCOMMERZ_CONFIGURATION_ERROR',
+            ]);
+            return back()->with('error', 'পেমেন্ট কনফিগারেশন সম্পূর্ণ নয়। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন। (CODE: CONFIG_ERROR)')->withInput();
+        }
+
+        // Validate amount strictly
+        $amount = (float) $validated['amount'];
+        if ($amount < 10 || $amount > 1000000 || !is_finite($amount)) {
+            Log::warning('Invalid donation amount', ['request_id' => $requestId, 'amount' => $amount]);
+            return back()->withErrors(['amount' => 'অনুগ্রহ করে ১০-১০,০০,০০০ টাকার মধ্যে সঠিক পরিমাণ লিখুন।'])->withInput();
+        }
+
+        $result = null;
+        $donation = null;
+        $transaction = null;
+
+        try {
+            // Create or find the donor (outside gateway transaction to persist even on gateway failure)
             $donor = Donor::firstOrCreate([
                 'email' => $validated['email'],
             ], [
@@ -110,14 +141,12 @@ class DonationController extends Controller
 
             // Generate unique internal transaction ID: DA-YYYY-NXXXX format
             $internalTransactionId = 'DA-' . date('Y') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
-
-            // Ensure uniqueness
             while (Donation::where('transaction_id', $internalTransactionId)->exists()) {
                 $internalTransactionId = 'DA-' . date('Y') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
             }
 
-            DB::transaction(function () use ($validated, $request, $gateway, $donor, $internalTransactionId, &$result) {
-                // Create the donation record
+            // Create donation+transaction as pending (persisted before gateway call)
+            DB::transaction(function () use ($validated, $request, $donor, $internalTransactionId, &$donation, &$transaction) {
                 $donation = Donation::create([
                     'donor_id' => $donor->id,
                     'project_id' => $validated['project_id'],
@@ -131,7 +160,6 @@ class DonationController extends Controller
                     'is_anonymous' => $validated['is_anonymous'] ?? false,
                 ]);
 
-                // Create transaction record
                 $transaction = Transaction::create([
                     'donation_id' => $donation->id,
                     'user_id' => $request->user()?->id,
@@ -144,61 +172,129 @@ class DonationController extends Controller
                     'currency' => 'BDT',
                     'failure_reason' => null,
                 ]);
-
-                // Initialize SSLCommerz payment
-                $fundName = $validated['donation_fund_id']
-                    ? ($donation->fund?->name_bn ?? $donation->fund?->name_en ?? 'Donation')
-                    : 'Donation';
-                $paymentData = [
-                    'total_amount' => $validated['amount'],
-                    'currency' => 'BDT',
-                    'tran_id' => $internalTransactionId,
-                    'product_category' => 'donation',
-                    'product_name' => $fundName,
-                    'product_profile' => 'general',
-                    'cus_name' => $validated['name'],
-                    'cus_email' => $validated['email'],
-                    'cus_phone' => $validated['mobile_number'],
-                    'cus_country' => 'Bangladesh',
-                    'value_a' => $donation->id,
-                    'value_b' => $request->user()?->id,
-                ];
-
-                $result = $gateway->initialize($paymentData);
-
-                if (!$result['success']) {
-                    $donation->update(['status' => 'failed']);
-                    $transaction->update([
-                        'status' => 'failed',
-                        'failure_reason' => $result['message'] ?? 'SSLCommerz initialization failed',
-                    ]);
-                    throw new \RuntimeException($result['message'] ?? 'Payment initialization failed');
-                }
-
-                // Update transaction with SSLCommerz session ID
-                $transaction->update([
-                    'status' => 'processing',
-                    'gateway_session_id' => $result['gateway_session_id'],
-                ]);
-
-                // Update donation status
-                $donation->update(['status' => 'processing']);
             });
 
-            if (!$result || !$result['success']) {
-                return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্হত হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।')->withInput();
+            Log::info('Donation pending created', [
+                'request_id' => $requestId,
+                'donation_id' => $donation->id,
+                'transaction_id' => $internalTransactionId,
+                'user_id' => $request->user()?->id,
+                'amount' => $validated['amount'],
+                'currency' => 'BDT',
+                'gateway' => 'sslcommerz',
+                'endpoint' => $endpoint,
+                'is_sandbox' => $isSandbox,
+            ]);
+
+            // Initialize SSLCommerz payment (outside DB transaction to avoid rollback on failure)
+            $fundName = $validated['donation_fund_id']
+                ? ($donation->fund?->name_bn ?? $donation->fund?->name_en ?? 'Donation')
+                : 'Donation';
+            $paymentData = [
+                'total_amount' => $validated['amount'],
+                'currency' => 'BDT',
+                'tran_id' => $internalTransactionId,
+                'product_category' => 'donation',
+                'product_name' => $fundName,
+                'product_profile' => 'general',
+                'cus_name' => $validated['name'],
+                'cus_email' => $validated['email'],
+                'cus_phone' => $validated['mobile_number'],
+                'cus_country' => 'Bangladesh',
+                'value_a' => $donation->id,
+                'value_b' => $request->user()?->id,
+            ];
+
+            // Step 8: Ensure callback URLs are HTTPS when behind ngrok/proxy
+            $appUrl = config('app.url');
+            $isHttps = $request->isSecure() || $request->header('X-Forwarded-Proto') === 'https';
+            if ($isHttps && str_starts_with($appUrl, 'http://')) {
+                Log::info('App URL is http but request is https (likely ngrok)', [
+                    'request_id' => $requestId,
+                    'app_url' => $appUrl,
+                    'forwarded_proto' => $request->header('X-Forwarded-Proto'),
+                    'host' => $request->getHost(),
+                ]);
             }
+
+            $result = $gateway->initialize($paymentData);
+
+            if (!$result['success']) {
+                $errorCode = str_contains($result['message'] ?? '', 'Store Credential') ? 'SSLCOMMERZ_AUTHENTICATION_ERROR' : 'SSLCOMMERZ_INITIALIZATION_FAILED';
+                $donation->update(['status' => 'failed']);
+                $transaction->update([
+                    'status' => 'failed',
+                    'failure_reason' => $result['message'] ?? 'SSLCommerz initialization failed',
+                ]);
+                Log::warning('SSLCommerz initialization returned failure', [
+                    'request_id' => $requestId,
+                    'donation_id' => $donation->id,
+                    'transaction_id' => $internalTransactionId,
+                    'error_code' => $errorCode,
+                    'gateway_message' => $result['message'] ?? null,
+                    'amount' => $validated['amount'],
+                ]);
+                return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। (' . $errorCode . ')')->withInput();
+            }
+
+            // Update transaction with SSLCommerz session ID
+            $transaction->update([
+                'status' => 'processing',
+                'gateway_session_id' => $result['gateway_session_id'],
+            ]);
+            $donation->update(['status' => 'processing']);
+
+            Log::info('SSLCommerz payment initialized successfully', [
+                'request_id' => $requestId,
+                'donation_id' => $donation->id,
+                'transaction_id' => $internalTransactionId,
+                'gateway_session_id' => $result['gateway_session_id'],
+                'amount' => $validated['amount'],
+                'currency' => 'BDT',
+                'has_redirect_url' => !empty($result['redirect_url']),
+            ]);
 
             // Redirect to SSLCommerz payment page
             return redirect($result['redirect_url']);
 
         } catch (\Throwable $e) {
-            Log::error('Donation SSLCommerz initialization failed', [
-                'error' => $e->getMessage(),
-                'email' => $validated['email'] ?? null,
+            $exceptionClass = get_class($e);
+            $isTimeout = str_contains($e->getMessage(), 'timeout') || $e instanceof \GuzzleHttp\Exception\ConnectException;
+            $errorCode = $isTimeout ? 'SSLCOMMERZ_TIMEOUT' : ($e instanceof \App\Payments\Exceptions\PaymentException ? 'SSLCOMMERZ_INVALID_RESPONSE' : 'SSLCOMMERZ_INITIALIZATION_FAILED');
+
+            // Try to persist failure status if donation was created
+            if (isset($donation) && $donation && $donation->exists) {
+                try {
+                    if ($donation->status === 'pending') {
+                        $donation->update(['status' => 'failed']);
+                    }
+                    if (isset($transaction) && $transaction && $transaction->exists && $transaction->status === 'pending') {
+                        $transaction->update(['status' => 'failed', 'failure_reason' => $e->getMessage()]);
+                    }
+                } catch (\Throwable $inner) {
+                    Log::error('Failed to mark donation as failed after exception', ['request_id' => $requestId, 'error' => $inner->getMessage()]);
+                }
+            }
+
+            Log::error('Donation SSLCommerz initialization exception', [
+                'request_id' => $requestId,
+                'exception_class' => $exceptionClass,
+                'exception_message' => $e->getMessage(),
+                'error_code' => $errorCode,
+                'donation_id' => $donation?->id,
+                'transaction_id' => $internalTransactionId ?? null,
+                'user_id' => $request->user()?->id,
                 'amount' => $validated['amount'] ?? null,
+                'currency' => 'BDT',
+                'gateway' => 'sslcommerz',
+                'endpoint' => $endpoint ?? null,
+                'is_sandbox' => $isSandbox ?? null,
+                'has_store_id' => !empty($storeId),
+                // Never log store_password, card, CVV, etc.
             ]);
-            return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্হত হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।')->withInput();
+            // In development, show more detail via session flash for debugging (not secrets)
+            $debugMessage = app()->environment('local', 'development') ? ' (' . $e->getMessage() . ')' : '';
+            return back()->with('error', 'পেমেন্ট আরম্ভ করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।' . $debugMessage)->withInput();
         }
     }
 

@@ -138,7 +138,8 @@ class SslCommerzNotification extends AbstractSslCommerz
 
     protected function setSuccessUrl()
     {
-        $this->successUrl = rtrim(config('app.url'), '/') . $this->config['success_url'];
+        // Use url() helper to respect current request host/scheme (important for ngrok HTTPS)
+        $this->successUrl = \Illuminate\Support\Facades\URL::to($this->config['success_url']);
     }
 
     protected function getSuccessUrl()
@@ -148,7 +149,7 @@ class SslCommerzNotification extends AbstractSslCommerz
 
     protected function setFailedUrl()
     {
-        $this->failedUrl = rtrim(config('app.url'), '/') . $this->config['failed_url'];
+        $this->failedUrl = \Illuminate\Support\Facades\URL::to($this->config['failed_url']);
     }
 
     protected function getFailedUrl()
@@ -158,7 +159,7 @@ class SslCommerzNotification extends AbstractSslCommerz
 
     protected function setCancelUrl()
     {
-        $this->cancelUrl = rtrim(config('app.url'), '/') . $this->config['cancel_url'];
+        $this->cancelUrl = \Illuminate\Support\Facades\URL::to($this->config['cancel_url']);
     }
 
     protected function getCancelUrl()
@@ -168,7 +169,7 @@ class SslCommerzNotification extends AbstractSslCommerz
 
     protected function setIPNUrl()
     {
-        $this->ipnUrl = rtrim(config('app.url'), '/') . $this->config['ipn_url'];
+        $this->ipnUrl = \Illuminate\Support\Facades\URL::to($this->config['ipn_url']);
     }
 
     protected function getIPNUrl()
