@@ -149,14 +149,14 @@ class DonationController extends Controller
             DB::transaction(function () use ($validated, $request, $donor, $internalTransactionId, &$donation, &$transaction) {
                 $donation = Donation::create([
                     'donor_id' => $donor->id,
-                    'project_id' => $validated['project_id'],
+                    'project_id' => $validated['project_id'] ?? null,
                     'donation_fund_id' => $validated['donation_fund_id'],
                     'user_id' => $request->user()?->id,
                     'amount' => $validated['amount'],
                     'payment_method' => $validated['payment_method'],
                     'transaction_id' => $internalTransactionId,
                     'status' => 'pending',
-                    'message' => $validated['message'],
+                    'message' => $validated['message'] ?? null,
                     'is_anonymous' => $validated['is_anonymous'] ?? false,
                 ]);
 
