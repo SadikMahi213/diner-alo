@@ -116,7 +116,7 @@ class DinersAloDashboardController extends Controller
         
         $donations = $query->latest()->paginate($request->per_page ?? 20);
         
-        return view('admin.partials.datatable_donations', compact('donations'))->render();
+        return response()->json($donations);
     }
     
     /**
@@ -138,7 +138,7 @@ class DinersAloDashboardController extends Controller
         
         $projects = $query->latest()->paginate($request->per_page ?? 10);
         
-        return view('admin.partials.datatable_projects', compact('projects'))->render();
+        return response()->json($projects);
     }
     
     /**
@@ -157,7 +157,7 @@ class DinersAloDashboardController extends Controller
         
         $donors = $query->latest()->paginate($request->per_page ?? 15);
         
-        return view('admin.partials.datatable_donors', compact('donors'))->render();
+        return response()->json($donors);
     }
     
     /**
@@ -179,7 +179,7 @@ class DinersAloDashboardController extends Controller
         
         $volunteers = $query->latest()->paginate($request->per_page ?? 15);
         
-        return view('admin.partials.datatable_volunteers', compact('volunteers'))->render();
+        return response()->json($volunteers);
     }
     
     /**
@@ -197,7 +197,7 @@ class DinersAloDashboardController extends Controller
         
         $members = $query->latest()->paginate($request->per_page ?? 15);
         
-        return view('admin.partials.datatable_members', compact('members'))->render();
+        return response()->json($members);
     }
     
     /**
@@ -219,7 +219,7 @@ class DinersAloDashboardController extends Controller
         
         $messages = $query->paginate($request->per_page ?? 15);
         
-        return view('admin.partials.datatable_contacts', compact('messages'))->render();
+        return response()->json($messages);
     }
     
     /**
